@@ -1,0 +1,29 @@
+[
+    {
+        "trimester": 1,
+        "min_calories": 2000,
+        "min_protein": 60,
+        "min_iron": 21,
+        "min_calcium": 1000,
+        "min_folate": 400,
+        "hydration_liters": 2.5
+    },
+    {
+        "trimester": 2,
+        "min_calories": 2340,
+        "min_protein": 70,
+        "min_iron": 35,
+        "min_calcium": 1000,
+        "min_folate": 600,
+        "hydration_liters": 3.0
+    },
+    {
+        "trimester": 3,
+        "min_calories": 2450,
+        "min_protein": 80,
+        "min_iron": 40,
+        "min_calcium": 1200,
+        "min_folate": 600,
+        "hydration_liters": 3.0
+    }
+]

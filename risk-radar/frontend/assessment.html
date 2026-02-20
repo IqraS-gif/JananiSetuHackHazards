@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Radar - Assessment</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="logo">Risk Radar</div>
+            <a href="dashboard.html">Back to Dashboard</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2>Vision Assessment</h2>
+        <div id="test-container">
+            <!-- Test interfaces will be injected here -->
+            <div id="instructions">
+                <p>Select a test to begin:</p>
+                <div class="test-selection">
+                    <button id="btn-contrast">Contrast Sensitivity</button>
+                    <button id="btn-acuity">Visual Acuity</button>
+                    <button id="btn-amsler">Amsler Grid</button>
+                    <button id="btn-peripheral">Peripheral Vision</button>
+                </div>
+            </div>
+
+            <div id="test-area" style="display:none;"></div>
+        </div>
+    </main>
+
+    <!-- Load API first as global or handle in app.js if converted to module. 
+         Since api.js is not a module yet, we leave it, but app.js will differ. -->
+    <script src="js/api.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,115 @@
+[
+  {
+    "id": "pmmvy",
+    "name_en": "PMMVY (Pradhan Mantri Matru Vandana Yojana)",
+    "name_hi": "PMMVY (प्रधानमंत्री मातृ वंदना योजना)",
+    "type": "cash",
+    "total_amount": 5000,
+    "eligibility": {
+      "aadhaar_linked": true,
+      "jdy_bank": true,
+      "min_trimester": 1
+    },
+    "installments": [
+      {
+        "amount": 1000,
+        "trigger": "early_registration",
+        "description_en": "On early registration of pregnancy",
+        "description_hi": "गर्भावस्था के शुरुआती पंजीकरण पर"
+      },
+      {
+        "amount": 2000,
+        "trigger": "trimester_2",
+        "min_week": 14,
+        "description_en": "After 6 months of pregnancy & 1 ANC",
+        "description_hi": "गर्भावस्था के 6 महीने बाद और 1 ANC जांच"
+      },
+      {
+        "amount": 2000,
+        "trigger": "birth",
+        "description_en": "After childbirth & first vaccination",
+        "description_hi": "बच्चे के जन्म और पहले टीकाकरण के बाद"
+      }
+    ],
+    "action_en": "Fill Form 1-A/B/C at nearest Anganwadi center or PHC",
+    "action_hi": "निकटतम आंगनवाड़ी केंद्र या PHC पर फॉर्म 1-A/B/C भरें"
+  },
+  {
+    "id": "jsy",
+    "name_en": "JSY (Janani Suraksha Yojana)",
+    "name_hi": "JSY (जननी सुरक्षा योजना)",
+    "type": "cash",
+    "total_amount": 1400,
+    "eligibility": {
+      "ration_categories": [
+        "BPL",
+        "AAY"
+      ],
+      "min_trimester": 3
+    },
+    "description_en": "₹1,400 cash incentive for institutional (hospital) delivery",
+    "description_hi": "अस्पताल में डिलीवरी के लिए ₹1,400 की नकद सहायता",
+    "action_en": "Ensure your pregnant status is registered with your ASHA worker for hospital delivery planning",
+    "action_hi": "अस्पताल में डिलीवरी की योजना के लिए सुनिश्चित करें कि आपकी गर्भावस्था आपकी ASHA कार्यकर्ता के पास पंजीकृत है"
+  },
+  {
+    "id": "ifa_tablets",
+    "name_en": "Free Iron & Folic Acid Tablets",
+    "name_hi": "मुफ्त आयरन और फोलिक एसिड की गोलियां",
+    "type": "supplement",
+    "eligibility": {
+      "min_trimester": 1
+    },
+    "description_en": "180 free tablets during pregnancy to prevent severe bleeding and infant risks",
+    "description_hi": "गर्भावस्था के दौरान 180 मुफ्त गोलियां ताकि गंभीर रक्तस्राव और शिशु के जोखिम को रोका जा सके",
+    "action_en": "Ask your ASHA worker or visit the nearest PHC to collect your monthly free IFA tablets",
+    "action_hi": "अपनी ASHA कार्यकर्ता से पूछें या मुफ्त IFA गोलियां प्राप्त करने के लिए निकटतम PHC पर जाएं"
+  },
+  {
+    "id": "nfsa_ration",
+    "name_en": "Free Ration (NFSA)",
+    "name_hi": "मुफ्त राशन (NFSA)",
+    "type": "food",
+    "eligibility": {
+      "nfsa_status": true,
+      "ration_categories": [
+        "AAY",
+        "BPL",
+        "APL"
+      ]
+    },
+    "description_en": "Free 5kg extra food grains per person per month to meet pregnancy calorie needs",
+    "description_hi": "गर्भावस्था में कैलोरी की जरूरत पूरी करने के लिए प्रति व्यक्ति प्रति माह 5 किलो मुफ्त अतिरिक्त अनाज",
+    "action_en": "Show your ration card at the local Fair Price Shop to claim your monthly entitlement",
+    "action_hi": "अपनी मासिक पात्रता प्राप्त करने के लिए स्थानीय राशन की दुकान पर अपना राशन कार्ड दिखाएं"
+  },
+  {
+    "id": "jssk",
+    "name_en": "JSSK (Janani Shishu Suraksha Karyakram)",
+    "name_hi": "JSSK (जननी शिशु सुरक्षा कार्यक्रम)",
+    "type": "service",
+    "total_amount": 0,
+    "eligibility": {
+      "min_trimester": 1,
+      "public_health_institution": true
+    },
+    "description_en": "Absolutely free delivery, C-section, drugs, blood, diet, and transport at Govt hospitals.",
+    "description_hi": "सरकारी अस्पतालों में बिल्कुल मुफ्त डिलीवरी, सी-सेक्शन, दवाएं, रक्त, आहार और परिवहन।",
+    "action_en": "Call 108 for free ambulance and deliver only at a Public Health Institution (PHC/CHC/DH).",
+    "action_hi": "मुफ्त एम्बुलेंस के लिए 108 पर कॉल करें और केवल सार्वजनिक स्वास्थ्य संस्थान में डिलीवरी कराएं।"
+  },
+  {
+    "id": "pmsma",
+    "name_en": "PMSMA (Pradhan Mantri Surakshit Matritva Abhiyan)",
+    "name_hi": "PMSMA (प्रधानमंत्री सुरक्षित मातृत्व अभियान)",
+    "type": "service",
+    "total_amount": 0,
+    "eligibility": {
+      "min_trimester": 2
+    },
+    "description_en": "Free, comprehensive ANC checkups by specialists on the 9th of every month.",
+    "description_hi": "हर महीने की 9 तारीख को विशेषज्ञों द्वारा मुफ्त और व्यापक ANC चेकअप।",
+    "action_en": "Visit your nearest Govt hospital exactly on the 9th of this month for a guaranteed free specialist checkup.",
+    "action_hi": "गारंटीकृत मुफ्त विशेषज्ञ जांच के लिए इस महीने की 9 तारीख को अपने निकटतम सरकारी अस्पताल जाएं।"
+  }
+]

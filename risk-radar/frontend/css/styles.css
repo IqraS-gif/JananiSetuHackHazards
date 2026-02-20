@@ -1,0 +1,224 @@
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --background-color: #f8f9fa;
+    --text-color: #333;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+header {
+    background: #fff;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+.hero {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.auth-container {
+    max-width: 400px;
+    margin: 4rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background: #343a40;
+    color: #fff;
+    padding: 1rem;
+}
+
+.sidebar a {
+    color: #adb5bd;
+    display: block;
+    padding: 0.5rem 0;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    color: #fff;
+}
+
+.content {
+    flex: 1;
+    padding: 2rem;
+}
+
+.assessment-card {
+    background: #fff;
+    padding: 0;
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.assessment-card:hover {
+    transform: translateY(-5px);
+}
+
+.assessment-card.low {
+    border-top: 4px solid #28a745;
+}
+
+.assessment-card.moderate {
+    border-top: 4px solid #ffc107;
+}
+
+.assessment-card.high {
+    border-top: 4px solid #dc3545;
+}
+
+.assessment-card.critical {
+    border-top: 4px solid #000;
+}
+
+.card-header {
+    padding: 1rem 1.5rem;
+    background: #fcfcfc;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-footer {
+    padding: 0.8rem 1.5rem;
+    background: #f8f9fa;
+    color: #666;
+}
+
+.badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.badge.low {
+    background: #d4edda;
+    color: #155724;
+}
+
+.badge.moderate {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.badge.high {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.badge.critical {
+    background: #343a40;
+    color: #fff;
+}
+
+.ml-insights {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: #f0f7ff;
+    border-radius: 6px;
+    border: 1px dashed #007bff;
+}
+
+.ml-tag {
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #007bff;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.recommendations {
+    margin-top: 0.8rem;
+    font-size: 0.9rem;
+}
+
+.recommendations ul {
+    margin-top: 0.4rem;
+    padding-left: 1.2rem;
+}
+
+.recommendations li {
+    margin-bottom: 0.2rem;
+    color: #444;
+}

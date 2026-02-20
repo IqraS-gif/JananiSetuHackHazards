@@ -1,0 +1,1854 @@
+{
+  "users": {
+    "user_001": {
+      "basic_info": {
+        "name": "Priya Sharma",
+        "age": 26,
+        "height": 162,
+        "pre_pregnancy_weight": 58,
+        "current_weight": 64,
+        "BMI": 22.1,
+        "trimester": 2,
+        "expected_due_date": "2026-07-15"
+      },
+      "medical_history": {
+        "previous_GDM": false,
+        "previous_hypertension": false,
+        "family_history_diabetes": false,
+        "family_history_hypertension": false,
+        "chronic_conditions": "None"
+      },
+      "daily_vitals": {
+        "2026-01-01": {
+          "systolic_bp": 117,
+          "diastolic_bp": 73
+        },
+        "2026-01-02": {
+          "systolic_bp": 111,
+          "diastolic_bp": 79
+        },
+        "2026-01-03": {
+          "systolic_bp": 114,
+          "diastolic_bp": 76
+        },
+        "2026-01-04": {
+          "systolic_bp": 112,
+          "diastolic_bp": 70
+        },
+        "2026-01-05": {
+          "systolic_bp": 118,
+          "diastolic_bp": 71
+        },
+        "2026-01-06": {
+          "systolic_bp": 116,
+          "diastolic_bp": 76
+        },
+        "2026-01-07": {
+          "systolic_bp": 120,
+          "diastolic_bp": 79
+        },
+        "2026-01-08": {
+          "systolic_bp": 117,
+          "diastolic_bp": 74
+        },
+        "2026-01-09": {
+          "systolic_bp": 119,
+          "diastolic_bp": 80
+        },
+        "2026-01-10": {
+          "systolic_bp": 118,
+          "diastolic_bp": 75
+        },
+        "2026-01-11": {
+          "systolic_bp": 113,
+          "diastolic_bp": 78
+        },
+        "2026-01-12": {
+          "systolic_bp": 116,
+          "diastolic_bp": 75
+        },
+        "2026-01-13": {
+          "systolic_bp": 110,
+          "diastolic_bp": 70
+        },
+        "2026-01-14": {
+          "systolic_bp": 110,
+          "diastolic_bp": 79
+        },
+        "2026-01-15": {
+          "systolic_bp": 118,
+          "diastolic_bp": 80
+        },
+        "2026-01-16": {
+          "systolic_bp": 111,
+          "diastolic_bp": 79
+        },
+        "2026-01-17": {
+          "systolic_bp": 115,
+          "diastolic_bp": 72
+        },
+        "2026-01-18": {
+          "systolic_bp": 111,
+          "diastolic_bp": 75
+        },
+        "2026-01-19": {
+          "systolic_bp": 112,
+          "diastolic_bp": 70
+        },
+        "2026-01-20": {
+          "systolic_bp": 110,
+          "diastolic_bp": 79
+        },
+        "2026-01-21": {
+          "systolic_bp": 110,
+          "diastolic_bp": 77
+        },
+        "2026-01-22": {
+          "systolic_bp": 116,
+          "diastolic_bp": 71
+        },
+        "2026-01-23": {
+          "systolic_bp": 114,
+          "diastolic_bp": 79
+        },
+        "2026-01-24": {
+          "systolic_bp": 115,
+          "diastolic_bp": 70
+        },
+        "2026-01-25": {
+          "systolic_bp": 110,
+          "diastolic_bp": 75
+        },
+        "2026-01-26": {
+          "systolic_bp": 114,
+          "diastolic_bp": 72
+        },
+        "2026-01-27": {
+          "systolic_bp": 115,
+          "diastolic_bp": 71
+        },
+        "2026-01-28": {
+          "systolic_bp": 114,
+          "diastolic_bp": 74
+        },
+        "2026-01-29": {
+          "systolic_bp": 116,
+          "diastolic_bp": 75
+        },
+        "2026-01-30": {
+          "systolic_bp": 120,
+          "diastolic_bp": 80
+        },
+        "2026-01-31": {
+          "systolic_bp": 112,
+          "diastolic_bp": 80
+        },
+        "2026-02-01": {
+          "systolic_bp": 119,
+          "diastolic_bp": 79
+        },
+        "2026-02-02": {
+          "systolic_bp": 120,
+          "diastolic_bp": 79
+        },
+        "2026-02-03": {
+          "systolic_bp": 116,
+          "diastolic_bp": 75
+        },
+        "2026-02-04": {
+          "systolic_bp": 115,
+          "diastolic_bp": 73
+        },
+        "2026-02-05": {
+          "systolic_bp": 114,
+          "diastolic_bp": 71
+        },
+        "2026-02-06": {
+          "systolic_bp": 111,
+          "diastolic_bp": 79
+        },
+        "2026-02-07": {
+          "systolic_bp": 119,
+          "diastolic_bp": 79
+        },
+        "2026-02-08": {
+          "systolic_bp": 113,
+          "diastolic_bp": 74
+        },
+        "2026-02-09": {
+          "systolic_bp": 116,
+          "diastolic_bp": 77
+        }
+      },
+      "daily_symptoms": {
+        "2026-01-01": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-02": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-03": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-04": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-05": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-06": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-07": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-08": {
+          "headache": 0,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-09": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-10": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-11": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-12": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-13": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-14": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-15": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-16": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-17": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-18": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-19": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-20": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-21": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-22": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-23": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-24": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-25": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-26": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-27": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-28": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-29": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-30": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-31": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-02-01": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-02-02": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-02-03": {
+          "headache": 0,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-02-04": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-02-05": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-02-06": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-02-07": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-02-08": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-02-09": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        }
+      },
+      "daily_lifestyle": {
+        "2026-01-01": {
+          "sleep_hours": 7.0,
+          "activity_minutes": 29
+        },
+        "2026-01-02": {
+          "sleep_hours": 7.2,
+          "activity_minutes": 26
+        },
+        "2026-01-03": {
+          "sleep_hours": 8.4,
+          "activity_minutes": 33
+        },
+        "2026-01-04": {
+          "sleep_hours": 7.8,
+          "activity_minutes": 26
+        },
+        "2026-01-05": {
+          "sleep_hours": 7.6,
+          "activity_minutes": 43
+        },
+        "2026-01-06": {
+          "sleep_hours": 8.3,
+          "activity_minutes": 22
+        },
+        "2026-01-07": {
+          "sleep_hours": 7.3,
+          "activity_minutes": 36
+        },
+        "2026-01-08": {
+          "sleep_hours": 7.7,
+          "activity_minutes": 39
+        },
+        "2026-01-09": {
+          "sleep_hours": 7.8,
+          "activity_minutes": 41
+        },
+        "2026-01-10": {
+          "sleep_hours": 7.1,
+          "activity_minutes": 24
+        },
+        "2026-01-11": {
+          "sleep_hours": 7.2,
+          "activity_minutes": 28
+        },
+        "2026-01-12": {
+          "sleep_hours": 7.3,
+          "activity_minutes": 23
+        },
+        "2026-01-13": {
+          "sleep_hours": 8.5,
+          "activity_minutes": 28
+        },
+        "2026-01-14": {
+          "sleep_hours": 8.1,
+          "activity_minutes": 20
+        },
+        "2026-01-15": {
+          "sleep_hours": 7.3,
+          "activity_minutes": 22
+        },
+        "2026-01-16": {
+          "sleep_hours": 7.5,
+          "activity_minutes": 31
+        },
+        "2026-01-17": {
+          "sleep_hours": 8.3,
+          "activity_minutes": 38
+        },
+        "2026-01-18": {
+          "sleep_hours": 8.4,
+          "activity_minutes": 22
+        },
+        "2026-01-19": {
+          "sleep_hours": 8.2,
+          "activity_minutes": 45
+        },
+        "2026-01-20": {
+          "sleep_hours": 7.7,
+          "activity_minutes": 44
+        },
+        "2026-01-21": {
+          "sleep_hours": 7.0,
+          "activity_minutes": 38
+        },
+        "2026-01-22": {
+          "sleep_hours": 7.7,
+          "activity_minutes": 43
+        },
+        "2026-01-23": {
+          "sleep_hours": 7.7,
+          "activity_minutes": 24
+        },
+        "2026-01-24": {
+          "sleep_hours": 8.1,
+          "activity_minutes": 35
+        },
+        "2026-01-25": {
+          "sleep_hours": 8.1,
+          "activity_minutes": 33
+        },
+        "2026-01-26": {
+          "sleep_hours": 7.7,
+          "activity_minutes": 25
+        },
+        "2026-01-27": {
+          "sleep_hours": 7.0,
+          "activity_minutes": 38
+        },
+        "2026-01-28": {
+          "sleep_hours": 8.3,
+          "activity_minutes": 20
+        },
+        "2026-01-29": {
+          "sleep_hours": 7.6,
+          "activity_minutes": 41
+        },
+        "2026-01-30": {
+          "sleep_hours": 8.2,
+          "activity_minutes": 35
+        },
+        "2026-01-31": {
+          "sleep_hours": 8.1,
+          "activity_minutes": 26
+        },
+        "2026-02-01": {
+          "sleep_hours": 8.0,
+          "activity_minutes": 36
+        },
+        "2026-02-02": {
+          "sleep_hours": 7.2,
+          "activity_minutes": 22
+        },
+        "2026-02-03": {
+          "sleep_hours": 7.2,
+          "activity_minutes": 24
+        },
+        "2026-02-04": {
+          "sleep_hours": 8.3,
+          "activity_minutes": 28
+        },
+        "2026-02-05": {
+          "sleep_hours": 7.2,
+          "activity_minutes": 23
+        },
+        "2026-02-06": {
+          "sleep_hours": 7.5,
+          "activity_minutes": 40
+        },
+        "2026-02-07": {
+          "sleep_hours": 7.3,
+          "activity_minutes": 28
+        },
+        "2026-02-08": {
+          "sleep_hours": 8.4,
+          "activity_minutes": 33
+        },
+        "2026-02-09": {
+          "sleep_hours": 7.1,
+          "activity_minutes": 20
+        }
+      },
+      "daily_nutrition": {
+        "2026-01-01": {
+          "total_calories": 2152,
+          "total_carbs": 158,
+          "protein": 65,
+          "fat": 52,
+          "sodium": 1550,
+          "folic": 585
+        },
+        "2026-01-02": {
+          "total_calories": 2067,
+          "total_carbs": 160,
+          "protein": 72,
+          "fat": 64,
+          "sodium": 1908,
+          "folic": 561
+        },
+        "2026-01-03": {
+          "total_calories": 2118,
+          "total_carbs": 189,
+          "protein": 65,
+          "fat": 51,
+          "sodium": 1809,
+          "folic": 420
+        },
+        "2026-01-04": {
+          "total_calories": 2046,
+          "total_carbs": 173,
+          "protein": 70,
+          "fat": 63,
+          "sodium": 1741,
+          "folic": 428
+        },
+        "2026-01-05": {
+          "total_calories": 2159,
+          "total_carbs": 168,
+          "protein": 71,
+          "fat": 58,
+          "sodium": 1586,
+          "folic": 546
+        },
+        "2026-01-06": {
+          "total_calories": 2013,
+          "total_carbs": 186,
+          "protein": 70,
+          "fat": 56,
+          "sodium": 1798,
+          "folic": 410
+        },
+        "2026-01-07": {
+          "total_calories": 2188,
+          "total_carbs": 172,
+          "protein": 65,
+          "fat": 54,
+          "sodium": 1913,
+          "folic": 494
+        },
+        "2026-01-08": {
+          "total_calories": 2153,
+          "total_carbs": 154,
+          "protein": 70,
+          "fat": 56,
+          "sodium": 1535,
+          "folic": 495
+        },
+        "2026-01-09": {
+          "total_calories": 2115,
+          "total_carbs": 190,
+          "protein": 75,
+          "fat": 63,
+          "sodium": 1732,
+          "folic": 585
+        },
+        "2026-01-10": {
+          "total_calories": 2074,
+          "total_carbs": 183,
+          "protein": 67,
+          "fat": 58,
+          "sodium": 1678,
+          "folic": 519
+        },
+        "2026-01-11": {
+          "total_calories": 2076,
+          "total_carbs": 181,
+          "protein": 66,
+          "fat": 61,
+          "sodium": 1661,
+          "folic": 489
+        },
+        "2026-01-12": {
+          "total_calories": 2072,
+          "total_carbs": 151,
+          "protein": 67,
+          "fat": 50,
+          "sodium": 1578,
+          "folic": 419
+        },
+        "2026-01-13": {
+          "total_calories": 2117,
+          "total_carbs": 153,
+          "protein": 73,
+          "fat": 63,
+          "sodium": 1799,
+          "folic": 594
+        },
+        "2026-01-14": {
+          "total_calories": 2199,
+          "total_carbs": 170,
+          "protein": 70,
+          "fat": 54,
+          "sodium": 1580,
+          "folic": 409
+        },
+        "2026-01-15": {
+          "total_calories": 2088,
+          "total_carbs": 151,
+          "protein": 71,
+          "fat": 53,
+          "sodium": 1719,
+          "folic": 409
+        },
+        "2026-01-16": {
+          "total_calories": 2091,
+          "total_carbs": 175,
+          "protein": 75,
+          "fat": 58,
+          "sodium": 1676,
+          "folic": 416
+        },
+        "2026-01-17": {
+          "total_calories": 2112,
+          "total_carbs": 174,
+          "protein": 67,
+          "fat": 51,
+          "sodium": 1637,
+          "folic": 414
+        },
+        "2026-01-18": {
+          "total_calories": 2110,
+          "total_carbs": 177,
+          "protein": 67,
+          "fat": 54,
+          "sodium": 1889,
+          "folic": 547
+        },
+        "2026-01-19": {
+          "total_calories": 2191,
+          "total_carbs": 181,
+          "protein": 65,
+          "fat": 59,
+          "sodium": 1775,
+          "folic": 566
+        },
+        "2026-01-20": {
+          "total_calories": 2092,
+          "total_carbs": 150,
+          "protein": 71,
+          "fat": 51,
+          "sodium": 1703,
+          "folic": 588
+        },
+        "2026-01-21": {
+          "total_calories": 2163,
+          "total_carbs": 188,
+          "protein": 74,
+          "fat": 63,
+          "sodium": 1568,
+          "folic": 549
+        },
+        "2026-01-22": {
+          "total_calories": 2075,
+          "total_carbs": 170,
+          "protein": 74,
+          "fat": 53,
+          "sodium": 1519,
+          "folic": 555
+        },
+        "2026-01-23": {
+          "total_calories": 2072,
+          "total_carbs": 177,
+          "protein": 73,
+          "fat": 60,
+          "sodium": 1542,
+          "folic": 438
+        },
+        "2026-01-24": {
+          "total_calories": 2078,
+          "total_carbs": 184,
+          "protein": 72,
+          "fat": 53,
+          "sodium": 1560,
+          "folic": 471
+        },
+        "2026-01-25": {
+          "total_calories": 2020,
+          "total_carbs": 169,
+          "protein": 70,
+          "fat": 51,
+          "sodium": 1678,
+          "folic": 412
+        },
+        "2026-01-26": {
+          "total_calories": 2010,
+          "total_carbs": 177,
+          "protein": 66,
+          "fat": 58,
+          "sodium": 1635,
+          "folic": 489
+        },
+        "2026-01-27": {
+          "total_calories": 2139,
+          "total_carbs": 177,
+          "protein": 70,
+          "fat": 53,
+          "sodium": 1504,
+          "folic": 422
+        },
+        "2026-01-28": {
+          "total_calories": 2128,
+          "total_carbs": 171,
+          "protein": 67,
+          "fat": 53,
+          "sodium": 1783,
+          "folic": 566
+        },
+        "2026-01-29": {
+          "total_calories": 2011,
+          "total_carbs": 173,
+          "protein": 72,
+          "fat": 55,
+          "sodium": 1623,
+          "folic": 535
+        },
+        "2026-01-30": {
+          "total_calories": 2022,
+          "total_carbs": 162,
+          "protein": 73,
+          "fat": 52,
+          "sodium": 1915,
+          "folic": 464
+        },
+        "2026-01-31": {
+          "total_calories": 2097,
+          "total_carbs": 183,
+          "protein": 75,
+          "fat": 65,
+          "sodium": 1715,
+          "folic": 428
+        },
+        "2026-02-01": {
+          "total_calories": 2044,
+          "total_carbs": 171,
+          "protein": 69,
+          "fat": 52,
+          "sodium": 1861,
+          "folic": 465
+        },
+        "2026-02-02": {
+          "total_calories": 2149,
+          "total_carbs": 155,
+          "protein": 69,
+          "fat": 56,
+          "sodium": 1894,
+          "folic": 543
+        },
+        "2026-02-03": {
+          "total_calories": 2063,
+          "total_carbs": 161,
+          "protein": 68,
+          "fat": 56,
+          "sodium": 1940,
+          "folic": 402
+        },
+        "2026-02-04": {
+          "total_calories": 2084,
+          "total_carbs": 186,
+          "protein": 65,
+          "fat": 54,
+          "sodium": 1792,
+          "folic": 595
+        },
+        "2026-02-05": {
+          "total_calories": 2020,
+          "total_carbs": 183,
+          "protein": 69,
+          "fat": 55,
+          "sodium": 1859,
+          "folic": 551
+        },
+        "2026-02-06": {
+          "total_calories": 2158,
+          "total_carbs": 155,
+          "protein": 75,
+          "fat": 63,
+          "sodium": 1636,
+          "folic": 547
+        },
+        "2026-02-07": {
+          "total_calories": 2162,
+          "total_carbs": 172,
+          "protein": 67,
+          "fat": 60,
+          "sodium": 1817,
+          "folic": 410
+        },
+        "2026-02-08": {
+          "total_calories": 2092,
+          "total_carbs": 158,
+          "protein": 71,
+          "fat": 60,
+          "sodium": 1629,
+          "folic": 466
+        },
+        "2026-02-09": {
+          "total_calories": 2109,
+          "total_carbs": 170,
+          "protein": 66,
+          "fat": 52,
+          "sodium": 1706,
+          "folic": 575
+        }
+      },
+      "lab_reports": [
+        {
+          "report_id": "L101",
+          "date": "2026-01-15",
+          "HbA1c": 5.2,
+          "urine_protein": 0,
+          "hemoglobin": 12.5,
+          "fasting_glucose_lab": 88
+        },
+        {
+          "report_id": "L102",
+          "date": "2026-02-05",
+          "HbA1c": 5.1,
+          "urine_protein": 0,
+          "hemoglobin": 12.6,
+          "fasting_glucose_lab": 85
+        }
+      ]
+    },
+    "user_002": {
+      "basic_info": {
+        "name": "Anjali Verma",
+        "age": 34,
+        "height": 158,
+        "pre_pregnancy_weight": 72,
+        "current_weight": 81,
+        "BMI": 28.8,
+        "trimester": 2,
+        "expected_due_date": "2026-06-20"
+      },
+      "medical_history": {
+        "previous_GDM": true,
+        "previous_hypertension": false,
+        "family_history_diabetes": true,
+        "family_history_hypertension": true,
+        "chronic_conditions": "Early signs of Preeclampsia"
+      },
+      "daily_vitals": {
+        "2026-01-01": {
+          "systolic_bp": 132,
+          "diastolic_bp": 83
+        },
+        "2026-01-02": {
+          "systolic_bp": 134,
+          "diastolic_bp": 84
+        },
+        "2026-01-03": {
+          "systolic_bp": 135,
+          "diastolic_bp": 87
+        },
+        "2026-01-04": {
+          "systolic_bp": 138,
+          "diastolic_bp": 85
+        },
+        "2026-01-05": {
+          "systolic_bp": 138,
+          "diastolic_bp": 86
+        },
+        "2026-01-06": {
+          "systolic_bp": 136,
+          "diastolic_bp": 85
+        },
+        "2026-01-07": {
+          "systolic_bp": 136,
+          "diastolic_bp": 86
+        },
+        "2026-01-08": {
+          "systolic_bp": 141,
+          "diastolic_bp": 88
+        },
+        "2026-01-09": {
+          "systolic_bp": 136,
+          "diastolic_bp": 87
+        },
+        "2026-01-10": {
+          "systolic_bp": 138,
+          "diastolic_bp": 89
+        },
+        "2026-01-11": {
+          "systolic_bp": 141,
+          "diastolic_bp": 86
+        },
+        "2026-01-12": {
+          "systolic_bp": 143,
+          "diastolic_bp": 87
+        },
+        "2026-01-13": {
+          "systolic_bp": 144,
+          "diastolic_bp": 91
+        },
+        "2026-01-14": {
+          "systolic_bp": 143,
+          "diastolic_bp": 92
+        },
+        "2026-01-15": {
+          "systolic_bp": 140,
+          "diastolic_bp": 90
+        },
+        "2026-01-16": {
+          "systolic_bp": 144,
+          "diastolic_bp": 88
+        },
+        "2026-01-17": {
+          "systolic_bp": 144,
+          "diastolic_bp": 90
+        },
+        "2026-01-18": {
+          "systolic_bp": 144,
+          "diastolic_bp": 92
+        },
+        "2026-01-19": {
+          "systolic_bp": 145,
+          "diastolic_bp": 91
+        },
+        "2026-01-20": {
+          "systolic_bp": 146,
+          "diastolic_bp": 92
+        },
+        "2026-01-21": {
+          "systolic_bp": 143,
+          "diastolic_bp": 93
+        },
+        "2026-01-22": {
+          "systolic_bp": 148,
+          "diastolic_bp": 94
+        },
+        "2026-01-23": {
+          "systolic_bp": 145,
+          "diastolic_bp": 94
+        },
+        "2026-01-24": {
+          "systolic_bp": 144,
+          "diastolic_bp": 91
+        },
+        "2026-01-25": {
+          "systolic_bp": 146,
+          "diastolic_bp": 95
+        },
+        "2026-01-26": {
+          "systolic_bp": 150,
+          "diastolic_bp": 93
+        },
+        "2026-01-27": {
+          "systolic_bp": 149,
+          "diastolic_bp": 95
+        },
+        "2026-01-28": {
+          "systolic_bp": 145,
+          "diastolic_bp": 95
+        },
+        "2026-01-29": {
+          "systolic_bp": 146,
+          "diastolic_bp": 97
+        },
+        "2026-01-30": {
+          "systolic_bp": 147,
+          "diastolic_bp": 97
+        },
+        "2026-01-31": {
+          "systolic_bp": 153,
+          "diastolic_bp": 97
+        },
+        "2026-02-01": {
+          "systolic_bp": 148,
+          "diastolic_bp": 94
+        },
+        "2026-02-02": {
+          "systolic_bp": 154,
+          "diastolic_bp": 97
+        },
+        "2026-02-03": {
+          "systolic_bp": 150,
+          "diastolic_bp": 97
+        },
+        "2026-02-04": {
+          "systolic_bp": 153,
+          "diastolic_bp": 96
+        },
+        "2026-02-05": {
+          "systolic_bp": 150,
+          "diastolic_bp": 100
+        },
+        "2026-02-06": {
+          "systolic_bp": 156,
+          "diastolic_bp": 100
+        },
+        "2026-02-07": {
+          "systolic_bp": 151,
+          "diastolic_bp": 101
+        },
+        "2026-02-08": {
+          "systolic_bp": 153,
+          "diastolic_bp": 101
+        },
+        "2026-02-09": {
+          "systolic_bp": 153,
+          "diastolic_bp": 101
+        }
+      },
+      "daily_symptoms": {
+        "2026-01-01": {
+          "headache": 0,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-02": {
+          "headache": 0,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-03": {
+          "headache": 0,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-04": {
+          "headache": 0,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-05": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-06": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-07": {
+          "headache": 0,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-08": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-09": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-10": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-11": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-12": {
+          "headache": 0,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-13": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-14": {
+          "headache": 1,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-15": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-16": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-17": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-18": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-19": {
+          "headache": 0,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-20": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-21": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-22": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-23": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-24": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-25": {
+          "headache": 0,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-26": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-27": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-28": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-29": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-30": {
+          "headache": 0,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-01-31": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-02-01": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 1
+        },
+        "2026-02-02": {
+          "headache": 0,
+          "swelling": 0,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-02-03": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-02-04": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 1,
+          "abdominal_pain": 0
+        },
+        "2026-02-05": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 1,
+          "abdominal_pain": 1
+        },
+        "2026-02-06": {
+          "headache": 0,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-02-07": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 1
+        },
+        "2026-02-08": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 0,
+          "abdominal_pain": 0
+        },
+        "2026-02-09": {
+          "headache": 1,
+          "swelling": 1,
+          "blurred_vision": 1,
+          "abdominal_pain": 1
+        }
+      },
+      "daily_lifestyle": {
+        "2026-01-01": {
+          "sleep_hours": 4.2,
+          "activity_minutes": 15
+        },
+        "2026-01-02": {
+          "sleep_hours": 5.3,
+          "activity_minutes": 8
+        },
+        "2026-01-03": {
+          "sleep_hours": 5.2,
+          "activity_minutes": 9
+        },
+        "2026-01-04": {
+          "sleep_hours": 4.0,
+          "activity_minutes": 9
+        },
+        "2026-01-05": {
+          "sleep_hours": 5.8,
+          "activity_minutes": 7
+        },
+        "2026-01-06": {
+          "sleep_hours": 5.0,
+          "activity_minutes": 6
+        },
+        "2026-01-07": {
+          "sleep_hours": 5.1,
+          "activity_minutes": 14
+        },
+        "2026-01-08": {
+          "sleep_hours": 5.8,
+          "activity_minutes": 6
+        },
+        "2026-01-09": {
+          "sleep_hours": 5.2,
+          "activity_minutes": 12
+        },
+        "2026-01-10": {
+          "sleep_hours": 4.6,
+          "activity_minutes": 13
+        },
+        "2026-01-11": {
+          "sleep_hours": 5.7,
+          "activity_minutes": 15
+        },
+        "2026-01-12": {
+          "sleep_hours": 4.7,
+          "activity_minutes": 11
+        },
+        "2026-01-13": {
+          "sleep_hours": 4.9,
+          "activity_minutes": 11
+        },
+        "2026-01-14": {
+          "sleep_hours": 4.4,
+          "activity_minutes": 6
+        },
+        "2026-01-15": {
+          "sleep_hours": 4.9,
+          "activity_minutes": 13
+        },
+        "2026-01-16": {
+          "sleep_hours": 5.2,
+          "activity_minutes": 6
+        },
+        "2026-01-17": {
+          "sleep_hours": 4.7,
+          "activity_minutes": 8
+        },
+        "2026-01-18": {
+          "sleep_hours": 5.3,
+          "activity_minutes": 11
+        },
+        "2026-01-19": {
+          "sleep_hours": 5.0,
+          "activity_minutes": 14
+        },
+        "2026-01-20": {
+          "sleep_hours": 5.4,
+          "activity_minutes": 5
+        },
+        "2026-01-21": {
+          "sleep_hours": 4.1,
+          "activity_minutes": 9
+        },
+        "2026-01-22": {
+          "sleep_hours": 4.3,
+          "activity_minutes": 11
+        },
+        "2026-01-23": {
+          "sleep_hours": 5.2,
+          "activity_minutes": 14
+        },
+        "2026-01-24": {
+          "sleep_hours": 4.7,
+          "activity_minutes": 7
+        },
+        "2026-01-25": {
+          "sleep_hours": 5.4,
+          "activity_minutes": 14
+        },
+        "2026-01-26": {
+          "sleep_hours": 5.0,
+          "activity_minutes": 5
+        },
+        "2026-01-27": {
+          "sleep_hours": 4.6,
+          "activity_minutes": 8
+        },
+        "2026-01-28": {
+          "sleep_hours": 5.8,
+          "activity_minutes": 12
+        },
+        "2026-01-29": {
+          "sleep_hours": 4.1,
+          "activity_minutes": 7
+        },
+        "2026-01-30": {
+          "sleep_hours": 6.0,
+          "activity_minutes": 15
+        },
+        "2026-01-31": {
+          "sleep_hours": 5.4,
+          "activity_minutes": 8
+        },
+        "2026-02-01": {
+          "sleep_hours": 6.0,
+          "activity_minutes": 7
+        },
+        "2026-02-02": {
+          "sleep_hours": 4.2,
+          "activity_minutes": 14
+        },
+        "2026-02-03": {
+          "sleep_hours": 5.1,
+          "activity_minutes": 11
+        },
+        "2026-02-04": {
+          "sleep_hours": 4.2,
+          "activity_minutes": 6
+        },
+        "2026-02-05": {
+          "sleep_hours": 5.2,
+          "activity_minutes": 14
+        },
+        "2026-02-06": {
+          "sleep_hours": 5.6,
+          "activity_minutes": 14
+        },
+        "2026-02-07": {
+          "sleep_hours": 4.6,
+          "activity_minutes": 5
+        },
+        "2026-02-08": {
+          "sleep_hours": 5.7,
+          "activity_minutes": 5
+        },
+        "2026-02-09": {
+          "sleep_hours": 5.2,
+          "activity_minutes": 12
+        }
+      },
+      "daily_nutrition": {
+        "2026-01-01": {
+          "total_calories": 2531,
+          "total_carbs": 260,
+          "protein": 65,
+          "fat": 100,
+          "sodium": 3334,
+          "folic": 383
+        },
+        "2026-01-02": {
+          "total_calories": 2434,
+          "total_carbs": 264,
+          "protein": 57,
+          "fat": 96,
+          "sodium": 3457,
+          "folic": 366
+        },
+        "2026-01-03": {
+          "total_calories": 2652,
+          "total_carbs": 245,
+          "protein": 58,
+          "fat": 100,
+          "sodium": 2802,
+          "folic": 446
+        },
+        "2026-01-04": {
+          "total_calories": 2502,
+          "total_carbs": 277,
+          "protein": 59,
+          "fat": 95,
+          "sodium": 3338,
+          "folic": 361
+        },
+        "2026-01-05": {
+          "total_calories": 2482,
+          "total_carbs": 263,
+          "protein": 59,
+          "fat": 84,
+          "sodium": 2878,
+          "folic": 300
+        },
+        "2026-01-06": {
+          "total_calories": 2587,
+          "total_carbs": 271,
+          "protein": 62,
+          "fat": 86,
+          "sodium": 3013,
+          "folic": 369
+        },
+        "2026-01-07": {
+          "total_calories": 2752,
+          "total_carbs": 275,
+          "protein": 64,
+          "fat": 100,
+          "sodium": 3395,
+          "folic": 339
+        },
+        "2026-01-08": {
+          "total_calories": 2685,
+          "total_carbs": 266,
+          "protein": 56,
+          "fat": 89,
+          "sodium": 3359,
+          "folic": 324
+        },
+        "2026-01-09": {
+          "total_calories": 2695,
+          "total_carbs": 261,
+          "protein": 61,
+          "fat": 94,
+          "sodium": 3403,
+          "folic": 357
+        },
+        "2026-01-10": {
+          "total_calories": 2777,
+          "total_carbs": 252,
+          "protein": 62,
+          "fat": 85,
+          "sodium": 3189,
+          "folic": 444
+        },
+        "2026-01-11": {
+          "total_calories": 2643,
+          "total_carbs": 244,
+          "protein": 59,
+          "fat": 96,
+          "sodium": 2825,
+          "folic": 335
+        },
+        "2026-01-12": {
+          "total_calories": 2446,
+          "total_carbs": 236,
+          "protein": 59,
+          "fat": 92,
+          "sodium": 3323,
+          "folic": 400
+        },
+        "2026-01-13": {
+          "total_calories": 2466,
+          "total_carbs": 277,
+          "protein": 64,
+          "fat": 94,
+          "sodium": 3061,
+          "folic": 315
+        },
+        "2026-01-14": {
+          "total_calories": 2681,
+          "total_carbs": 221,
+          "protein": 56,
+          "fat": 98,
+          "sodium": 3405,
+          "folic": 380
+        },
+        "2026-01-15": {
+          "total_calories": 2521,
+          "total_carbs": 226,
+          "protein": 61,
+          "fat": 94,
+          "sodium": 3047,
+          "folic": 415
+        },
+        "2026-01-16": {
+          "total_calories": 2423,
+          "total_carbs": 256,
+          "protein": 57,
+          "fat": 99,
+          "sodium": 3009,
+          "folic": 305
+        },
+        "2026-01-17": {
+          "total_calories": 2636,
+          "total_carbs": 257,
+          "protein": 59,
+          "fat": 96,
+          "sodium": 3422,
+          "folic": 449
+        },
+        "2026-01-18": {
+          "total_calories": 2621,
+          "total_carbs": 276,
+          "protein": 65,
+          "fat": 91,
+          "sodium": 3471,
+          "folic": 300
+        },
+        "2026-01-19": {
+          "total_calories": 2450,
+          "total_carbs": 245,
+          "protein": 62,
+          "fat": 80,
+          "sodium": 3008,
+          "folic": 367
+        },
+        "2026-01-20": {
+          "total_calories": 2670,
+          "total_carbs": 251,
+          "protein": 64,
+          "fat": 83,
+          "sodium": 3412,
+          "folic": 340
+        },
+        "2026-01-21": {
+          "total_calories": 2482,
+          "total_carbs": 251,
+          "protein": 60,
+          "fat": 84,
+          "sodium": 3355,
+          "folic": 336
+        },
+        "2026-01-22": {
+          "total_calories": 2504,
+          "total_carbs": 248,
+          "protein": 57,
+          "fat": 90,
+          "sodium": 3208,
+          "folic": 421
+        },
+        "2026-01-23": {
+          "total_calories": 2419,
+          "total_carbs": 245,
+          "protein": 59,
+          "fat": 84,
+          "sodium": 2835,
+          "folic": 430
+        },
+        "2026-01-24": {
+          "total_calories": 2498,
+          "total_carbs": 267,
+          "protein": 65,
+          "fat": 96,
+          "sodium": 2995,
+          "folic": 329
+        },
+        "2026-01-25": {
+          "total_calories": 2583,
+          "total_carbs": 245,
+          "protein": 64,
+          "fat": 83,
+          "sodium": 3160,
+          "folic": 323
+        },
+        "2026-01-26": {
+          "total_calories": 2746,
+          "total_carbs": 242,
+          "protein": 58,
+          "fat": 98,
+          "sodium": 3422,
+          "folic": 377
+        },
+        "2026-01-27": {
+          "total_calories": 2692,
+          "total_carbs": 227,
+          "protein": 55,
+          "fat": 96,
+          "sodium": 3125,
+          "folic": 418
+        },
+        "2026-01-28": {
+          "total_calories": 2403,
+          "total_carbs": 238,
+          "protein": 58,
+          "fat": 95,
+          "sodium": 3269,
+          "folic": 421
+        },
+        "2026-01-29": {
+          "total_calories": 2556,
+          "total_carbs": 237,
+          "protein": 64,
+          "fat": 80,
+          "sodium": 3131,
+          "folic": 320
+        },
+        "2026-01-30": {
+          "total_calories": 2536,
+          "total_carbs": 250,
+          "protein": 63,
+          "fat": 85,
+          "sodium": 2857,
+          "folic": 334
+        },
+        "2026-01-31": {
+          "total_calories": 2539,
+          "total_carbs": 272,
+          "protein": 58,
+          "fat": 90,
+          "sodium": 2949,
+          "folic": 436
+        },
+        "2026-02-01": {
+          "total_calories": 2694,
+          "total_carbs": 221,
+          "protein": 62,
+          "fat": 87,
+          "sodium": 3171,
+          "folic": 404
+        },
+        "2026-02-02": {
+          "total_calories": 2520,
+          "total_carbs": 254,
+          "protein": 55,
+          "fat": 87,
+          "sodium": 3340,
+          "folic": 447
+        },
+        "2026-02-03": {
+          "total_calories": 2493,
+          "total_carbs": 276,
+          "protein": 59,
+          "fat": 86,
+          "sodium": 3220,
+          "folic": 310
+        },
+        "2026-02-04": {
+          "total_calories": 2766,
+          "total_carbs": 251,
+          "protein": 65,
+          "fat": 95,
+          "sodium": 3003,
+          "folic": 439
+        },
+        "2026-02-05": {
+          "total_calories": 2513,
+          "total_carbs": 274,
+          "protein": 60,
+          "fat": 86,
+          "sodium": 3294,
+          "folic": 316
+        },
+        "2026-02-06": {
+          "total_calories": 2675,
+          "total_carbs": 262,
+          "protein": 63,
+          "fat": 98,
+          "sodium": 3400,
+          "folic": 440
+        },
+        "2026-02-07": {
+          "total_calories": 2782,
+          "total_carbs": 276,
+          "protein": 58,
+          "fat": 90,
+          "sodium": 3412,
+          "folic": 301
+        },
+        "2026-02-08": {
+          "total_calories": 2490,
+          "total_carbs": 253,
+          "protein": 58,
+          "fat": 84,
+          "sodium": 2914,
+          "folic": 372
+        },
+        "2026-02-09": {
+          "total_calories": 2749,
+          "total_carbs": 260,
+          "protein": 59,
+          "fat": 96,
+          "sodium": 3355,
+          "folic": 309
+        }
+      },
+      "lab_reports": [
+        {
+          "report_id": "L201",
+          "date": "2026-01-10",
+          "HbA1c": 6.2,
+          "urine_protein": 0,
+          "hemoglobin": 10.5,
+          "fasting_glucose_lab": 105
+        },
+        {
+          "report_id": "L202",
+          "date": "2026-02-08",
+          "HbA1c": 6.8,
+          "urine_protein": 1,
+          "hemoglobin": 10.1,
+          "fasting_glucose_lab": 118
+        }
+      ]
+    }
+  }
+}

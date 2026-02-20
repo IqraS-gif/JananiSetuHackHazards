@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "Maa App",
+    "slug": "maa-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": false,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFF5F7"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "This app needs access to the microphone to record your meal descriptions.",
+        "NSSpeechRecognitionUsageDescription": "This app uses speech recognition to convert your voice into meal logs."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFF5F7"
+      },
+      "package": "com.maa.app",
+      "permissions": [
+        "RECORD_AUDIO"
+      ]
+    },
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "plugins": [
+      "expo-sqlite",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "This app needs access to the microphone to record your meal descriptions.",
+          "speechRecognitionPermission": "This app uses speech recognition to convert your voice into meal logs."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ]
+  }
+}

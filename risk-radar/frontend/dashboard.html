@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Radar - Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css?v=1.1">
+</head>
+
+<body>
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <h3>Risk Radar</h3>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Dashboard</a></li>
+                    <li><a href="#" id="newAssessmentBtn">New Assessment</a></li>
+                    <li><a href="#" id="logoutBtn">Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+        <main class="content">
+            <header>
+                <h2>Welcome, <span id="usernameDisplay">User</span></h2>
+            </header>
+
+            <section class="assessments-list">
+                <h3>Your Assessments</h3>
+                <div id="assessmentContainer">
+                    <!-- Assessments will be loaded here -->
+                    <p>Loading...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/api.js?v=1.1"></script>
+    <script type="module" src="js/dashboard.js?v=1.1"></script>
+</body>
+
+</html>
