@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
     StyleSheet,
     View,
@@ -19,27 +19,15 @@ import Animated, {
     useSharedValue,
     useAnimatedStyle,
     withSpring,
-    withRepeat,
-    withTiming,
-    withSequence
 } from 'react-native-reanimated';
+import { useFocusEffect } from '@react-navigation/native';
 import { Colors } from '../../constants';
 import { useLanguage } from '../../context/LanguageContext';
 import { useUser } from '../../context/UserContext';
+import { getPatientsList } from '../../services/database/DatabaseService';
 
 const { width } = Dimensions.get('window');
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
-// Mock data to match ASHA view - Sorted by Risk (High > Normal > Low)
-const ALL_PATIENTS = [
-    { id: 'user_002', name: 'Sunita Devi', age: 26, week: 28, risk: 'High', bp: '145/95', hb: '9.2', lastSymptom: 'Leg Swelling' },
-    { id: 'user_003', name: 'Meena Kumari', age: 29, week: 14, risk: 'Normal', bp: '122/80', hb: '10.8', lastSymptom: 'Mild Nausea' },
-    { id: 'user_010', name: 'Rani Devi', age: 24, week: 22, risk: 'Normal', bp: '128/82', hb: '10.5', lastSymptom: 'Back Pain' },
-    { id: 'user_001', name: 'Anjali Sharma', age: 23, week: 32, risk: 'Low', bp: '118/78', hb: '11.5', lastSymptom: 'None' },
-].sort((a, b) => {
-    const priority = { 'High': 3, 'Normal': 2, 'Low': 1 };
-    return priority[b.risk] - priority[a.risk];
-});
 
 const PatientCard = ({ patient, onPress, isHindi, index }) => {
     const scale = useSharedValue(1);
@@ -87,7 +75,7 @@ const PatientCard = ({ patient, onPress, isHindi, index }) => {
 
             <View style={st.patientMain}>
                 <View style={st.avatar}>
-                    <Text style={st.avatarText}>{patient.name.split(' ').map(n => n[0]).join('')}</Text>
+                    <Text style={st.avatarText}>{patient.initial}</Text>
                 </View>
                 <View style={st.patientInfo}>
                     <Text style={st.name}>{patient.name}</Text>
@@ -132,21 +120,67 @@ const PatientCard = ({ patient, onPress, isHindi, index }) => {
     );
 };
 
+const STATIC_PATIENTS = [
+    { id: 'user_002', name: 'Sunita Devi', age: 26, week: 28, risk: 'High', bp: '145/95', hb: '9.2', lastSymptom: 'Leg Swelling', initial: 'SD' },
+    { id: 'user_003', name: 'Meena Kumari', age: 29, week: 14, risk: 'Normal', bp: '122/80', hb: '10.8', lastSymptom: 'Mild Nausea', initial: 'MK' },
+    { id: 'user_010', name: 'Rani Devi', age: 24, week: 22, risk: 'Normal', bp: '128/82', hb: '10.5', lastSymptom: 'Back Pain', initial: 'RD' },
+    { id: 'user_001', name: 'Anjali Sharma', age: 23, week: 32, risk: 'Low', bp: '118/78', hb: '11.5', lastSymptom: 'None', initial: 'AS' }
+];
+
 export default function DoctorDashboard({ navigation }) {
     const { language } = useLanguage();
     const { user, logout } = useUser();
     const isHindi = language === 'hi';
     const [searchQuery, setSearchQuery] = useState('');
     const [refreshing, setRefreshing] = useState(false);
+    const [patients, setPatients] = useState([]);
 
-    const filteredPatients = ALL_PATIENTS.filter(p =>
+    useFocusEffect(
+        useCallback(() => {
+            let active = true;
+            const fetchPatients = async () => {
+                try {
+                    const list = await getPatientsList();
+                    if (active) {
+                        const map = new Map();
+                        STATIC_PATIENTS.forEach(p => map.set(p.id, p));
+                        list.forEach(p => map.set(p.id, p));
+                        const merged = Array.from(map.values());
+
+                        const priority = { 'High': 3, 'Normal': 2, 'Low': 1 };
+                        const sorted = merged.sort((a, b) => priority[b.risk] - priority[a.risk]);
+                        setPatients(sorted);
+                    }
+                } catch (e) {
+                    console.error("[DoctorDashboard] Error fetching patients:", e);
+                }
+            };
+            fetchPatients();
+            return () => { active = false; };
+        }, [])
+    );
+
+    const filteredPatients = patients.filter(p =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.id.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const onRefresh = () => {
+    const onRefresh = async () => {
         setRefreshing(true);
-        setTimeout(() => setRefreshing(false), 1000);
+        try {
+            const list = await getPatientsList();
+            const map = new Map();
+            STATIC_PATIENTS.forEach(p => map.set(p.id, p));
+            list.forEach(p => map.set(p.id, p));
+            const merged = Array.from(map.values());
+
+            const priority = { 'High': 3, 'Normal': 2, 'Low': 1 };
+            const sorted = merged.sort((a, b) => priority[b.risk] - priority[a.risk]);
+            setPatients(sorted);
+        } catch (e) {
+            console.error(e);
+        }
+        setRefreshing(false);
     };
 
     return (
@@ -174,7 +208,7 @@ export default function DoctorDashboard({ navigation }) {
                             <View style={st.statsIconContainer}>
                                 <MaterialCommunityIcons name="account-group" size={24} color="rgba(255,255,255,0.8)" />
                             </View>
-                            <Text style={st.statsVal}>{ALL_PATIENTS.length}</Text>
+                            <Text style={st.statsVal}>{patients.length}</Text>
                             <Text style={st.statsLabel}>{isHindi ? 'कुल मरीज' : 'Total Patients'}</Text>
                         </LinearGradient>
                     </Animated.View>
@@ -183,7 +217,7 @@ export default function DoctorDashboard({ navigation }) {
                             <View style={[st.statsIconContainer, { backgroundColor: 'rgba(255,255,255,0.2)' }]}>
                                 <MaterialCommunityIcons name="heart-pulse" size={24} color="#FFF" />
                             </View>
-                            <Text style={st.statsVal}>{ALL_PATIENTS.filter(p => p.risk === 'High').length}</Text>
+                            <Text style={st.statsVal}>{patients.filter(p => p.risk === 'High').length}</Text>
                             <Text style={st.statsLabel}>{isHindi ? 'उच्च जोखिम' : 'High Risk'}</Text>
                         </LinearGradient>
                     </Animated.View>

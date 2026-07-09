@@ -21,12 +21,14 @@ import { useLanguage } from '../../context/LanguageContext';
 import {
     getVisitHistory,
     getDoctorInstructions,
-    saveDoctorInstruction
+    saveDoctorInstruction,
+    getUserProfile,
+    getVitalsHistory
 } from '../../services/database/DatabaseService';
 import { useUser } from '../../context/UserContext';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system/legacy';
-import { transcribeAudio } from '../../services/ai/GeminiService';
+import { transcribeAudio, structureDoctorInstruction } from '../../services/ai/GeminiService';
 
 const { width } = Dimensions.get('window');
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -178,11 +180,88 @@ const PATIENT_DATA = {
             { label: 'Sugar', value: '110', status: 'normal', unit: 'mg/dL', icon: 'cup-water' },
         ],
         predictions: {
-            bp: { risk: 0.12, level: 'LOW', reasoning: { en: ['Stable trends'], hi: ['स्थिर रुझान'] } },
-            diabetes: { risk: 0.15, level: 'LOW', reasoning: { en: ['Normal trends'], hi: ['सामान्य रुझान'] } }
+            bp: { risk: 0.12, level: 'LOW', label: 'BP Risk', reasoning: { en: ['BP stable at average bounds.'], hi: ['बीपी सामान्य सीमा के भीतर स्थिर है।'] } },
+            diabetes: { risk: 0.15, level: 'LOW', label: 'Diabetes Risk', reasoning: { en: ['Blood sugar remains within safe range.'], hi: ['ब्लड शुगर सुरक्षित सीमा के भीतर है।'] } }
         },
         alerts: { en: ['Watch iron intake'], hi: ['आयरन के सेवन पर ध्यान दें'] }
+    },
+    'user_004': {
+        name: 'Pooja Varma',
+        age: 24,
+        week: 20,
+        risk: 'Low',
+        vitals: [
+            { label: 'BP', value: '116/76', status: 'normal', unit: 'mmHg', icon: 'heart-pulse' },
+            { label: 'Hb', value: '11.2', status: 'normal', unit: 'g/dL', icon: 'water' },
+            { label: 'Weight', value: '60', status: 'normal', unit: 'kg', icon: 'scale-bathroom' },
+            { label: 'Sugar', value: '95', status: 'normal', unit: 'mg/dL', icon: 'cup-water' },
+        ],
+        predictions: {
+            bp: { risk: 0.05, level: 'LOW', label: 'BP Risk', reasoning: { en: ['BP stable at average bounds.'], hi: ['बीपी सामान्य सीमा के भीतर स्थिर है।'] } },
+            diabetes: { risk: 0.07, level: 'LOW', label: 'Diabetes Risk', reasoning: { en: ['Blood sugar remains within safe range.'], hi: ['ब्लड शुगर सुरक्षित सीमा के भीतर है।'] } }
+        },
+        alerts: { en: ['All indicators within normal range'], hi: ['सभी संकेतक सामान्य सीमा के भीतर हैं'] }
+    },
+    'user_010': {
+        name: 'Rani Devi',
+        age: 24,
+        week: 22,
+        risk: 'Normal',
+        vitals: [
+            { label: 'BP', value: '128/82', status: 'normal', unit: 'mmHg', icon: 'heart-pulse' },
+            { label: 'Hb', value: '10.5', status: 'normal', unit: 'g/dL', icon: 'water' },
+            { label: 'Weight', value: '63', status: 'normal', unit: 'kg', icon: 'scale-bathroom' },
+            { label: 'Sugar', value: '115', status: 'normal', unit: 'mg/dL', icon: 'cup-water' },
+        ],
+        predictions: {
+            bp: { risk: 0.18, level: 'LOW', label: 'BP Risk', reasoning: { en: ['BP stable at average bounds.'], hi: ['बीपी सामान्य सीमा के भीतर स्थिर है।'] } },
+            diabetes: { risk: 0.20, level: 'LOW', label: 'Diabetes Risk', reasoning: { en: ['Blood sugar remains within safe range.'], hi: ['ब्लड शुगर सुरक्षित सीमा के भीतर है।'] } }
+        },
+        alerts: { en: ['All indicators within normal range'], hi: ['सभी संकेतक सामान्य सीमा के भीतर हैं'] }
     }
+};
+
+const getSafeSummary = (summary, isHindi) => {
+    if (!summary) {
+        return {
+            observations: isHindi ? 'कोई अवलोकन उपलब्ध नहीं है।' : 'No observations available.',
+            indicators: [],
+            advice: [],
+            emergency: 'None'
+        };
+    }
+    if (typeof summary === 'string') {
+        return {
+            observations: summary,
+            indicators: [],
+            advice: [],
+            emergency: 'None'
+        };
+    }
+    const subObj = isHindi ? summary.summary_hi : summary.summary_en;
+    if (subObj) {
+        return {
+            observations: subObj.observations || '',
+            indicators: subObj.indicators || [],
+            advice: subObj.advice || [],
+            emergency: subObj.emergency || 'None'
+        };
+    }
+    const legacyText = isHindi ? summary.summary_hi : summary.summary_en;
+    if (typeof legacyText === 'string') {
+        return {
+            observations: legacyText,
+            indicators: [],
+            advice: [],
+            emergency: 'None'
+        };
+    }
+    return {
+        observations: isHindi ? 'कोई अवलोकन उपलब्ध नहीं है।' : 'No observations available.',
+        indicators: [],
+        advice: [],
+        emergency: 'None'
+    };
 };
 
 export default function DoctorPatientDetail({ route, navigation }) {
@@ -190,7 +269,7 @@ export default function DoctorPatientDetail({ route, navigation }) {
     const { user } = useUser();
     const isHindi = language === 'hi';
     const { patientId } = route.params || { patientId: 'user_002' };
-    const patient = PATIENT_DATA[patientId] || PATIENT_DATA['user_002'];
+    const [patient, setPatient] = useState(PATIENT_DATA[patientId] || PATIENT_DATA['user_002']);
 
     const [isAnalysisVisible, setAnalysisVisible] = useState(false);
     const [selectedRisk, setSelectedRisk] = useState(null);
@@ -211,6 +290,92 @@ export default function DoctorPatientDetail({ route, navigation }) {
     const timerRef = useRef(null);
 
     useEffect(() => {
+        const loadPatientData = async () => {
+            try {
+                const staticPatient = PATIENT_DATA[patientId];
+                const profile = await getUserProfile(patientId);
+                
+                if (profile) {
+                    const vitalsList = await getVitalsHistory(patientId);
+                    const latest = vitalsList && vitalsList.length > 0 ? vitalsList[0] : null;
+
+                    let sys = latest?.systolic || 120;
+                    let dia = latest?.diastolic || 80;
+                    let bpStr = `${sys}/${dia}`;
+                    let hbStr = latest?.hba1c ? String(latest.hba1c) : '11.2';
+                    let weightStr = profile.current_weight_kg ? String(profile.current_weight_kg) : '60';
+                    let sugarStr = latest?.blood_sugar ? String(latest.blood_sugar) : '90';
+
+                    const getBpStatus = (s, d) => (s >= 140 || d >= 90) ? 'high' : (s >= 130 || d >= 80) ? 'warning' : 'normal';
+                    const getSugarStatus = (sg) => sg >= 140 ? 'high' : sg >= 120 ? 'warning' : 'normal';
+
+                    const vitalsArray = [
+                        { label: 'BP', value: bpStr, status: getBpStatus(sys, dia), unit: 'mmHg', icon: 'heart-pulse' },
+                        { label: 'Hb', value: hbStr, status: parseFloat(hbStr) < 11.0 ? 'low' : 'normal', unit: 'g/dL', icon: 'water' },
+                        { label: 'Weight', value: weightStr, status: 'normal', unit: 'kg', icon: 'scale-bathroom' },
+                        { label: 'Sugar', value: sugarStr, status: getSugarStatus(parseFloat(sugarStr)), unit: 'mg/dL', icon: 'cup-water' }
+                    ];
+
+                    let risk = 'Low';
+                    let bpRiskVal = 0.1;
+                    let sugarRiskVal = 0.1;
+                    if (sys >= 140 || dia >= 90) { risk = 'High'; bpRiskVal = 0.85; }
+                    else if (sys >= 130 || dia >= 80) { risk = 'Normal'; bpRiskVal = 0.45; }
+
+                    if (parseFloat(sugarStr) >= 140) { risk = 'High'; sugarRiskVal = 0.9; }
+                    else if (parseFloat(sugarStr) >= 120) { if (risk !== 'High') risk = 'Normal'; sugarRiskVal = 0.5; }
+
+                    const bpReasoningEn = risk === 'High' 
+                        ? ['Elevated Systolic/Diastolic BP detected.', 'Risk of Gestational Hypertension.'] 
+                        : ['BP stable at average bounds.', 'No adverse cardiovascular signs.'];
+                    const bpReasoningHi = risk === 'High' 
+                        ? ['उच्च सिस्टोलिक/डायस्टोलिक बीपी दर्ज किया गया है।', 'जेस्टेशनल हाइपरटेंशन का जोखिम।'] 
+                        : ['बीपी सामान्य सीमा के भीतर स्थिर है।', 'कोई प्रतिकूल लक्षण नहीं पाए गए।'];
+
+                    const sugarReasoningEn = parseFloat(sugarStr) >= 140
+                        ? ['Elevated glucose levels detected.', 'Gestational diabetes risk indicator.']
+                        : ['Blood glucose remains within safe range.', 'Fasting sugar levels optimal.'];
+                    const sugarReasoningHi = parseFloat(sugarStr) >= 140
+                        ? ['ब्लड ग्लूकोज का स्तर बढ़ा हुआ पाया गया है।', 'जेस्टेशनल डायबिटीज का खतरा।']
+                        : ['ब्लड शुगर सामान्य और सुरक्षित सीमा में है।', 'खाली पेट शुगर का स्तर सामान्य है।'];
+
+                    const newPatientData = {
+                        name: profile.name,
+                        age: profile.age || 25,
+                        week: profile.pregnancy_week || 12,
+                        risk: risk,
+                        image: staticPatient?.image || null,
+                        vitals: vitalsArray,
+                        predictions: {
+                            bp: { 
+                                risk: bpRiskVal, 
+                                level: bpRiskVal >= 0.8 ? 'HIGH' : bpRiskVal >= 0.4 ? 'WARNING' : 'LOW', 
+                                label: 'BP Risk', 
+                                reasoning: { en: bpReasoningEn, hi: bpReasoningHi } 
+                            },
+                            diabetes: { 
+                                risk: sugarRiskVal, 
+                                level: sugarRiskVal >= 0.8 ? 'HIGH' : sugarRiskVal >= 0.4 ? 'WARNING' : 'LOW', 
+                                label: 'Diabetes Risk', 
+                                reasoning: { en: sugarReasoningEn, hi: sugarReasoningHi } 
+                            }
+                        },
+                        alerts: {
+                            en: risk === 'High' ? ['Clinical values are elevated'] : ['All indicators within normal range'],
+                            hi: risk === 'High' ? ['लक्षण स्तर सामान्य से अधिक हैं'] : ['सभी संकेतक सामान्य सीमा के भीतर हैं']
+                        }
+                    };
+                    setPatient(newPatientData);
+                } else {
+                    setPatient(staticPatient || PATIENT_DATA['user_002']);
+                }
+            } catch (err) {
+                console.error("Load patient details error:", err);
+                setPatient(staticPatient || PATIENT_DATA['user_002']);
+            }
+        };
+
+        loadPatientData();
         loadVisitHistory();
         loadDoctorInstructions();
     }, [patientId]);
@@ -248,12 +413,25 @@ export default function DoctorPatientDetail({ route, navigation }) {
         if (!newInstruction.trim()) return;
         setIsSaving(true);
         try {
-            await saveDoctorInstruction(patientId, user.id, newInstruction);
+            let structuredInstruction = newInstruction;
+            try {
+                const aiResult = await structureDoctorInstruction(newInstruction);
+                if (aiResult && (aiResult.en || aiResult.hi)) {
+                    structuredInstruction = JSON.stringify(aiResult);
+                }
+            } catch (aiError) {
+                console.error("Failed to structure instruction, falling back to raw text:", aiError);
+            }
+
+            await saveDoctorInstruction(patientId, user.id, structuredInstruction);
             setNewInstruction('');
             await loadDoctorInstructions();
             Alert.alert(isHindi ? "सफल" : "Success", isHindi ? "निर्देश सहेजा गया" : "Instruction saved successfully");
-        } catch (e) { Alert.alert("Error", "Failed to save"); }
-        finally { setIsSaving(false); }
+        } catch (e) { 
+            Alert.alert("Error", "Failed to save"); 
+        } finally { 
+            setIsSaving(false); 
+        }
     };
 
     async function startRecording() {
@@ -275,13 +453,8 @@ export default function DoctorPatientDetail({ route, navigation }) {
             await recording.stopAndUnloadAsync();
             const uri = recording.getURI();
 
-            // Read file as base64 for Gemini
-            const base64Audio = await FileSystem.readAsStringAsync(uri, {
-                encoding: FileSystem.EncodingType.Base64,
-            });
-
-            // Transcribe using Gemini
-            const transcript = await transcribeAudio(base64Audio, language);
+            // Transcribe using Sarvam/Gemini
+            const transcript = await transcribeAudio(uri, language);
 
             if (transcript && transcript !== 'NO_SPEECH') {
                 setNewInstruction(prev => prev + (prev.length > 0 ? " " : "") + transcript);
@@ -445,12 +618,24 @@ export default function DoctorPatientDetail({ route, navigation }) {
                     <View style={st.section}>
                         <Text style={st.reportLabel}>{isHindi ? 'पिछले निर्देश' : 'Past Instructions'}</Text>
                         <View style={st.instructionsList}>
-                            {doctorInstructions.map((inst, idx) => (
-                                <View key={idx} style={st.instructionLine}>
-                                    <Text style={st.instructionText}>• {inst.instruction}</Text>
-                                    <Text style={st.instructionDate}>{new Date(inst.created_at).toLocaleDateString()}</Text>
-                                </View>
-                            ))}
+                            {doctorInstructions.map((inst, idx) => {
+                                let displayInst = inst.instruction;
+                                try {
+                                    if (inst.instruction.startsWith('{')) {
+                                        const parsed = JSON.parse(inst.instruction);
+                                        displayInst = isHindi ? (parsed.hi || parsed.en) : (parsed.en || parsed.hi);
+                                    }
+                                } catch (e) {
+                                    // Fallback to raw text
+                                }
+                                const formattedText = displayInst.trim().startsWith('•') ? displayInst : `• ${displayInst}`;
+                                return (
+                                    <View key={idx} style={st.instructionLine}>
+                                        <Text style={st.instructionText}>{formattedText}</Text>
+                                        <Text style={st.instructionDate}>{new Date(inst.created_at).toLocaleDateString()}</Text>
+                                    </View>
+                                );
+                            })}
                         </View>
                     </View>
                 )}
@@ -461,18 +646,21 @@ export default function DoctorPatientDetail({ route, navigation }) {
                         <MaterialCommunityIcons name="calendar-check" size={20} color="#6366F1" />
                         <Text style={st.sectionTitle}>{isHindi ? 'विज़िट इतिहास' : 'Visit History'}</Text>
                     </View>
-                    {visitHistory.map((visit) => (
-                        <TouchableOpacity key={visit.id} style={st.visitHistoryCard} onPress={() => setViewingVisit(visit)}>
-                            <View style={st.visitCardHeader}>
-                                <View style={st.visitDateBadge}>
-                                    <MaterialCommunityIcons name="calendar" size={14} color="#6366F1" />
-                                    <Text style={st.visitDate}>{visit.date}</Text>
+                    {visitHistory.map((visit) => {
+                        const safeSum = getSafeSummary(visit.summary, isHindi);
+                        return (
+                            <TouchableOpacity key={visit.id} style={st.visitHistoryCard} onPress={() => setViewingVisit(visit)}>
+                                <View style={st.visitCardHeader}>
+                                    <View style={st.visitDateBadge}>
+                                        <MaterialCommunityIcons name="calendar" size={14} color="#6366F1" />
+                                        <Text style={st.visitDate}>{visit.date}</Text>
+                                    </View>
+                                    <MaterialCommunityIcons name="chevron-right" size={20} color="#CCC" />
                                 </View>
-                                <MaterialCommunityIcons name="chevron-right" size={20} color="#CCC" />
-                            </View>
-                            <Text style={st.visitSnippet} numberOfLines={2}>{isHindi ? visit.summary.summary_hi.observations : visit.summary.summary_en.observations}</Text>
-                        </TouchableOpacity>
-                    ))}
+                                <Text style={st.visitSnippet} numberOfLines={2}>{safeSum.observations}</Text>
+                            </TouchableOpacity>
+                        );
+                    })}
                 </View>
 
             </ScrollView>
@@ -485,14 +673,19 @@ export default function DoctorPatientDetail({ route, navigation }) {
                             <Text style={st.modalTitle}>{isHindi ? 'विज़िट विवरण' : 'Visit Details'}</Text>
                             <TouchableOpacity onPress={() => setViewingVisit(null)}><MaterialCommunityIcons name="close" size={24} color="#666" /></TouchableOpacity>
                         </View>
-                        <ScrollView>
-                            <Text style={st.reportLabel}>{isHindi ? 'अवलोकन' : 'Observations'}</Text>
-                            <Text style={st.reportText}>{isHindi ? viewingVisit?.summary.summary_hi.observations : viewingVisit?.summary.summary_en.observations}</Text>
-                            <Text style={[st.reportLabel, { marginTop: 15 }]}>{isHindi ? 'दी गई सलाह' : 'Advice'}</Text>
-                            {(isHindi ? viewingVisit?.summary.summary_hi.advice : viewingVisit?.summary.summary_en.advice)?.map((a, i) => (
-                                <Text key={i} style={st.listItem}>• {a}</Text>
-                            ))}
-                        </ScrollView>
+                        {viewingVisit && (() => {
+                            const safeSum = getSafeSummary(viewingVisit.summary, isHindi);
+                            return (
+                                <ScrollView>
+                                    <Text style={st.reportLabel}>{isHindi ? 'अवलोकन' : 'Observations'}</Text>
+                                    <Text style={st.reportText}>{safeSum.observations}</Text>
+                                    <Text style={[st.reportLabel, { marginTop: 15 }]}>{isHindi ? 'दी गई सलाह' : 'Advice'}</Text>
+                                    {safeSum.advice?.map((a, i) => (
+                                        <Text key={i} style={st.listItem}>• {a}</Text>
+                                    ))}
+                                </ScrollView>
+                            );
+                        })()}
                     </View>
                 </View>
             </Modal>
