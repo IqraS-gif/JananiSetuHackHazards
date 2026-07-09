@@ -4,7 +4,7 @@
  * Now includes Voice Activity Detection (VAD) for auto-stopping during eye tests.
  */
 
-import { transcribeAudio } from './ai/GroqService';
+import { transcribeAudio } from './ai/GeminiService';
 
 let Audio;
 try {
@@ -15,6 +15,8 @@ try {
 }
 
 let recording = null;
+let isStarting = false;
+let activeLanguage = 'hi';
 let eventCallbacks = {
     result: [],
     end: [],
@@ -69,9 +71,16 @@ export const VoiceRecognitionService = {
 
     /**
      * Start recording with auto-silence detection (VAD)
+     * maxMs caps the recording so Sarvam STT never sees >30s audio.
      */
-    async start() {
+    async start(langCode = 'hi', maxMs = 8000) {
+        activeLanguage = langCode;
         if (!Audio) throw new Error("Audio recording not supported");
+        if (isStarting) {
+            console.log('[Voice] Already starting a recording, ignoring start request');
+            return;
+        }
+        isStarting = true;
         try {
             // Safety: Unload previous recording if it exists
             if (recording) {
@@ -92,16 +101,14 @@ export const VoiceRecognitionService = {
             const onStatusUpdate = async (status) => {
                 if (!status.isRecording) return;
 
-                // Metering values are typically -160 to 0 (dB)
                 const db = status.metering || -160;
 
-                // Basic VAD Logic
-                if (db > -55) { // Threshold for "speech"
+                if (db > -55) {
                     speechDetected = true;
                     silenceCount = 0;
                 } else if (speechDetected) {
                     silenceCount++;
-                    // If silent for ~400ms (4 updates of 100ms), stop automatically
+                    // ~400ms of silence after speech → stop
                     if (silenceCount >= 4) {
                         console.log('[Voice] Silence detected, auto-stopping...');
                         VoiceRecognitionService.stop();
@@ -128,8 +135,19 @@ export const VoiceRecognitionService = {
             );
 
             recording = newRecording;
+            isStarting = false;
             console.log('[Voice] Recording started with VAD');
+
+            // Hard cap: stop after maxMs regardless of VAD
+            setTimeout(() => {
+                if (recording === newRecording) {
+                    console.log(`[Voice] Max duration (${maxMs}ms) reached, stopping...`);
+                    VoiceRecognitionService.stop();
+                }
+            }, maxMs);
+
         } catch (err) {
+            isStarting = false;
             console.error('[Voice] Failed to start recording', err);
             throw err;
         }
@@ -139,7 +157,20 @@ export const VoiceRecognitionService = {
      * Stop recording and transcribe
      */
     async stop() {
-        if (!recording) return;
+        if (!recording) {
+            if (isStarting) {
+                console.log('[Voice] Stop called while starting, waiting to stop...');
+                let checks = 0;
+                while (isStarting && checks < 20) {
+                    await new Promise(resolve => setTimeout(resolve, 50));
+                    checks++;
+                }
+                if (recording) {
+                    return this.stop();
+                }
+            }
+            return;
+        }
 
         try {
             console.log('[Voice] Stopping recording...');
@@ -147,8 +178,8 @@ export const VoiceRecognitionService = {
             const uri = recording.getURI();
             recording = null;
 
-            console.log('[Voice] Transcribing audio with Groq...');
-            const transcript = await transcribeAudio(uri);
+            console.log(`[Voice] Transcribing audio using multi-tier STT (lang: ${activeLanguage})...`);
+            const transcript = await transcribeAudio(uri, activeLanguage);
 
             // Notify subscribers
             eventCallbacks.result.forEach(cb => cb({ results: [{ transcript }] }));
