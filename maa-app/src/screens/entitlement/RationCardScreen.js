@@ -17,6 +17,7 @@ import {
 
 import { Colors, Dimensions } from '../../constants';
 import { useLanguage } from '../../context/LanguageContext';
+import { useUser } from '../../context/UserContext';
 import { generateGapReport } from '../../services/EntitlementEngine';
 import { generateEntitlementExplanation } from '../../services/ai/GeminiService';
 import {
@@ -28,6 +29,7 @@ import { playTextToSpeech, stopTextToSpeech } from '../../services/TextToSpeechS
 
 export default function RationCardScreen({ navigation }) {
     const { language } = useLanguage();
+    const { user } = useUser();
     const hi = language === 'hi';
 
     const [loading, setLoading] = useState(true);
@@ -47,7 +49,7 @@ export default function RationCardScreen({ navigation }) {
     const loadData = async () => {
         try {
             setLoading(true);
-            const userProfile = await getUserProfile();
+            const userProfile = await getUserProfile(user?.id || 'user_001');
             setProfile(userProfile);
             
             if (!userProfile) {

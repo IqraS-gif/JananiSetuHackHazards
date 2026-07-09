@@ -110,7 +110,7 @@ const VisualTrendGraph = ({ riskLevel, color, dark = false }) => {
     );
 };
 
-export default function SetuScreen() {
+export default function SetuScreen({ navigation }) {
     const { language } = useLanguage();
     const { user } = useUser();
     const [isAnalysisVisible, setAnalysisVisible] = useState(false);
@@ -205,25 +205,164 @@ export default function SetuScreen() {
         },
     };
 
+    const loadProfileData = async () => {
+        try {
+            setLoading(true);
+            const userId = user?.id || 'user_001';
+            const lang = language === 'hi' ? 'hi' : 'en';
+
+            if (userId === 'user_001' || userId === 'user_002') {
+                const profile = USER_PROFILES[userId];
+                setBpRisk(profile.bpRisk);
+                setDiabetesData({
+                    ...profile.diabetesData,
+                    recommendations: profile.diabetesData.recommendations[lang],
+                });
+                setIsHighRisk(profile.isHighRisk);
+                setBpInsightLines(profile.bpInsights[lang]);
+                setBpLabelText(profile.bpLabel);
+            } else {
+                // Load profile and vitals dynamically from SQLite
+                const profile = await getUserProfile(userId);
+                const vitals = await getVitalsHistory(userId);
+                const latestVital = vitals && vitals.length > 0 ? vitals[0] : null;
+
+                const sysVal = latestVital?.systolic || 120;
+                const diaVal = latestVital?.diastolic || 80;
+                const glucose = latestVital?.blood_sugar || latestVital?.fbs || latestVital?.ppbs || 95;
+                const fSugar = latestVital?.fbs || null;
+                const rSugar = latestVital?.ppbs || latestVital?.blood_sugar || null;
+
+                // 1. Calculate dynamic BP risk
+                let dynamicBpRisk = 0.08;
+                let dynamicBpLabel = { en: 'Your BP is perfectly stable', hi: 'आपका बीपी बिल्कुल सामान्य है' };
+                let dynamicBpInsights = {
+                    en: [
+                        `Blood pressure within normal range (${sysVal}/${diaVal} mmHg).`,
+                        'No signs of preeclampsia. Keep up your healthy routine.',
+                        'Next BP checkup recommended in 2 weeks.',
+                    ],
+                    hi: [
+                        `रक्तचाप सामान्य सीमा में है (${sysVal}/${diaVal} mmHg)।`,
+                        'प्रीक्लेम्पसिया का कोई संकेत नहीं। अपनी स्वस्थ दिनचर्या जारी रखें।',
+                        'अगली बीपी जांच 2 सप्ताह में करवाएं।',
+                    ]
+                };
+
+                if (sysVal >= 140 || diaVal >= 90) {
+                    dynamicBpRisk = 0.84;
+                    dynamicBpLabel = { en: 'High BP trend detected – consult doctor', hi: 'उच्च बीपी का रुझान – डॉक्टर से मिलें' };
+                    dynamicBpInsights = {
+                        en: [
+                            `⚠️ High BP recorded recently (${sysVal}/${diaVal} mmHg).`,
+                            'Preeclampsia screening strongly advised.',
+                            'Reduce salt intake to less than 2g/day immediately.',
+                            'Monitor BP every 4 hours and log readings.',
+                        ],
+                        hi: [
+                            `⚠️ हाल ही में उच्च बीपी दर्ज किया गया (${sysVal}/${diaVal} mmHg)।`,
+                            'प्रीक्लेम्पसिया जांच तुरंत करवाना आवश्यक है।',
+                            'नमक का सेवन तुरंत 2 ग्राम/दिन से कम करें।',
+                            'हर 4 घंटे में बीपी मापें और रिकॉर्ड करें।',
+                        ]
+                    };
+                } else if (sysVal >= 130 || diaVal >= 80) {
+                    dynamicBpRisk = 0.45;
+                    dynamicBpLabel = { en: 'Elevated BP detected – monitor weekly', hi: 'बढ़ा हुआ बीपी – साप्ताहिक निगरानी करें' };
+                    dynamicBpInsights = {
+                        en: [
+                            `Elevated BP recorded recently (${sysVal}/${diaVal} mmHg).`,
+                            'Keep monitoring your blood pressure weekly and avoid heavy workload.',
+                            'Reduce salt intake.',
+                        ],
+                        hi: [
+                            `हाल ही में बढ़ा हुआ बीपी दर्ज किया गया (${sysVal}/${diaVal} mmHg)।`,
+                            'हर हफ्ते बीपी चेक करवाएं और भारी काम करने से बचें।',
+                            'नमक का सेवन कम करें।',
+                        ]
+                    };
+                }
+
+                // 2. Calculate dynamic diabetes risk
+                let dynamicDiabetesRisk = 0.06;
+                let dynamicGlucosePred = Math.round(glucose);
+                let dynamicDiabetesLevel = 'Low';
+                let dynamicDiabetesRecs = {
+                    en: [
+                        'Great work! Your glucose levels are optimal.',
+                        'Continue balanced meals and daily walks.',
+                        'Stay hydrated with 8+ glasses of water daily.',
+                    ],
+                    hi: [
+                        'शाबाश! आपके ग्लूकोज का स्तर बेहतरीन है।',
+                        'संतुलित भोजन और प्रतिदिन सैर जारी रखें।',
+                        'प्रतिदिन 8+ गिलास पानी पिएं।',
+                    ]
+                };
+
+                if ((fSugar && fSugar >= 95) || (rSugar && rSugar >= 140) || glucose >= 140) {
+                    dynamicDiabetesRisk = 0.91;
+                    dynamicDiabetesLevel = 'High';
+                    dynamicDiabetesRecs = {
+                        en: [
+                            '⚠️ High Risk: Consult your doctor about Gestational Diabetes.',
+                            'Reduce carbohydrate intake. Avoid white rice, sugary foods.',
+                            'Monitor glucose levels after every meal.',
+                            'Walk for 20 minutes after lunch and dinner.',
+                        ],
+                        hi: [
+                            '⚠️ उच्च जोखिम: गर्भकालीन मधुमेह के बारे में तुरंत डॉक्टर से मिलें।',
+                            'कार्बोहाइड्रेट कम करें। सफेद चावल और मीठे खाद्य पदार्थ न खाएं।',
+                            'हर भोजन के बाद ग्लूकोज का स्तर जांचें।',
+                            'दोपहर और रात के भोजन के बाद 20 मिनट टहलें।',
+                        ]
+                    };
+                } else if ((fSugar && fSugar >= 90) || (rSugar && rSugar >= 120) || glucose >= 120) {
+                    dynamicDiabetesRisk = 0.45;
+                    dynamicDiabetesLevel = 'Moderate';
+                    dynamicDiabetesRecs = {
+                        en: [
+                            'Moderate Risk: Monitor your glucose levels closely.',
+                            'Focus on low-GI foods, whole grains, and exercise gently.',
+                            'Walk for 15-20 minutes after meals.',
+                            'Avoid sugary drinks and refined carbs.',
+                        ],
+                        hi: [
+                            'सामान्य जोखिम: अपने ग्लूकोज स्तर की निगरानी करें।',
+                            'कम-जीआई खाद्य पदार्थों, साबुत अनाज और हल्के व्यायाम पर ध्यान दें।',
+                            'भोजन के बाद 15-20 मिनट टहलें।',
+                            'मीठे पेय और रिफाइंड कार्ब्स से बचें।',
+                        ]
+                    };
+                }
+
+                setBpRisk(dynamicBpRisk);
+                setDiabetesData({
+                    riskProbability: dynamicDiabetesRisk,
+                    predictedGlucose: dynamicGlucosePred,
+                    riskLevel: dynamicDiabetesLevel,
+                    recommendations: dynamicDiabetesRecs[lang],
+                });
+                setIsHighRisk(dynamicBpRisk >= 0.7 || dynamicDiabetesRisk >= 0.7);
+                setBpInsightLines(dynamicBpInsights[lang]);
+                setBpLabelText(dynamicBpLabel);
+            }
+        } catch (error) {
+            console.error('[SetuScreen] Error loading profile/vitals:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         loadProfileData();
     }, [user, language]);
 
-    const loadProfileData = () => {
-        const userId = user?.id || 'user_001';
-        const profile = USER_PROFILES[userId] || USER_PROFILES['user_001'];
-        const lang = language === 'hi' ? 'hi' : 'en';
-
-        setBpRisk(profile.bpRisk);
-        setDiabetesData({
-            ...profile.diabetesData,
-            recommendations: profile.diabetesData.recommendations[lang],
-        });
-        setIsHighRisk(profile.isHighRisk);
-        setBpInsightLines(profile.bpInsights[lang]);
-        setBpLabelText(profile.bpLabel);
-        setLoading(false);
-    };
+    useEffect(() => {
+        if (!navigation) return;
+        const unsubscribe = navigation.addListener('focus', loadProfileData);
+        return unsubscribe;
+    }, [navigation, user, language]);
 
     const openAnalysis = (type) => {
         setSelectedRisk(type);
