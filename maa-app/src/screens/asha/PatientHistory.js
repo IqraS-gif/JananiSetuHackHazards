@@ -19,12 +19,14 @@ import Svg, { Circle, LinearGradient as SvgGradient, Stop, Defs } from 'react-na
 import { Colors } from '../../constants';
 import designSystem from '../../theme/designSystem';
 import { useLanguage } from '../../context/LanguageContext';
-import { summarizeVisit } from '../../services/ai/GeminiService';
+import { summarizeVisit, transcribeAudio } from '../../services/ai/GeminiService';
 import * as FileSystem from 'expo-file-system/legacy';
 import {
     saveVisitSummary,
     getVisitHistory,
-    getDoctorInstructions
+    getDoctorInstructions,
+    getUserProfile,
+    getVitalsHistory
 } from '../../services/database/DatabaseService';
 import { Audio } from 'expo-av';
 
@@ -377,13 +379,233 @@ const PATIENT_DATA = {
             ]
         }
     },
+    'user_003': {
+        name: 'Meena Kumari',
+        age: 29,
+        week: 14,
+        risk: 'Normal',
+        vitals: [
+            { label: 'BP', value: '122/80', status: 'normal', unit: 'mmHg', icon: 'heart-pulse' },
+            { label: 'Hb', value: '10.8', status: 'normal', unit: 'g/dL', icon: 'water' },
+            { label: 'Weight', value: '58', status: 'normal', unit: 'kg', icon: 'scale-bathroom' },
+            { label: 'Sugar', value: '110', status: 'normal', unit: 'mg/dL', icon: 'cup-water' },
+        ],
+        predictions: {
+            bp: {
+                risk: 0.12,
+                level: 'LOW',
+                label: 'BP Risk',
+                reasoning: {
+                    en: ['BP stable at average bounds.'],
+                    hi: ['बीपी सामान्य सीमा के भीतर स्थिर है।']
+                },
+                recs: {
+                    en: ['Maintain current salt levels.'],
+                    hi: ['नमक का सेवन सामान्य बनाए रखें।']
+                }
+            },
+            diabetes: {
+                risk: 0.15,
+                level: 'LOW',
+                label: 'Diabetes Risk',
+                glucose: 110,
+                reasoning: {
+                    en: ['Blood sugar remains within safe range.'],
+                    hi: ['ब्लड शुगर सुरक्षित सीमा के भीतर है।']
+                },
+                recs: {
+                    en: ['Continue normal dietary checks.'],
+                    hi: ['सामान्य आहार नियंत्रण जारी रखें।']
+                }
+            }
+        },
+        nutrition: {
+            avgDailyCalories: 2200,
+            targetCalories: 2200,
+            recommendations: [
+                { label: 'Maintain balanced intake', labelHi: 'संतुलित आहार जारी रखें', value: 75, color: '#4CAF50' },
+            ],
+            intake: [
+                { nutrient: 'Iron', nutrientHi: 'आयरन', consumed: 22, required: 27, status: 'good' },
+                { nutrient: 'Calcium', nutrientHi: 'कैल्शियम', consumed: 1000, required: 1200, status: 'good' },
+                { nutrient: 'Protein', nutrientHi: 'प्रोटीन', consumed: 68, required: 75, status: 'good' },
+                { nutrient: 'Folic Acid', nutrientHi: 'फॉलिक एसिड', consumed: 350, required: 400, status: 'good' },
+                { nutrient: 'Sodium', nutrientHi: 'सोडियम', consumed: 2000, required: 2300, status: 'good' },
+            ]
+        },
+        alerts: {
+            en: ['Watch iron intake'],
+            hi: ['आयरन के सेवन पर ध्यान दें']
+        }
+    },
+    'user_004': {
+        name: 'Pooja Varma',
+        age: 24,
+        week: 20,
+        risk: 'Low',
+        vitals: [
+            { label: 'BP', value: '116/76', status: 'normal', unit: 'mmHg', icon: 'heart-pulse' },
+            { label: 'Hb', value: '11.2', status: 'normal', unit: 'g/dL', icon: 'water' },
+            { label: 'Weight', value: '60', status: 'normal', unit: 'kg', icon: 'scale-bathroom' },
+            { label: 'Sugar', value: '95', status: 'normal', unit: 'mg/dL', icon: 'cup-water' },
+        ],
+        predictions: {
+            bp: {
+                risk: 0.05,
+                level: 'LOW',
+                label: 'BP Risk',
+                reasoning: {
+                    en: ['BP stable at average bounds.'],
+                    hi: ['बीपी सामान्य सीमा के भीतर स्थिर है।']
+                },
+                recs: {
+                    en: ['Keep up healthy routine.'],
+                    hi: ['स्वस्थ दिनचर्या बनाए रखें।']
+                }
+            },
+            diabetes: {
+                risk: 0.07,
+                level: 'LOW',
+                label: 'Diabetes Risk',
+                glucose: 95,
+                reasoning: {
+                    en: ['Blood sugar remains within safe range.'],
+                    hi: ['ब्लड शुगर सुरक्षित सीमा के भीतर है।']
+                },
+                recs: {
+                    en: ['Continue balanced diet.'],
+                    hi: ['संतुलित आहार जारी रखें।']
+                }
+            }
+        },
+        nutrition: {
+            avgDailyCalories: 2150,
+            targetCalories: 2200,
+            recommendations: [
+                { label: 'Continue balanced diet', labelHi: 'संतुलित आहार जारी रखें', value: 80, color: '#4CAF50' },
+            ],
+            intake: [
+                { nutrient: 'Iron', nutrientHi: 'आयरन', consumed: 24, required: 27, status: 'good' },
+                { nutrient: 'Calcium', nutrientHi: 'कैल्शियम', consumed: 1050, required: 1200, status: 'good' },
+                { nutrient: 'Protein', nutrientHi: 'प्रोटीन', consumed: 72, required: 75, status: 'good' },
+                { nutrient: 'Folic Acid', nutrientHi: 'फॉलिक एसिड', consumed: 370, required: 400, status: 'good' },
+                { nutrient: 'Sodium', nutrientHi: 'सोडियम', consumed: 1900, required: 2300, status: 'good' },
+            ]
+        },
+        alerts: {
+            en: ['All indicators within normal range'],
+            hi: ['सभी संकेतक सामान्य सीमा के भीतर हैं']
+        }
+    },
+    'user_010': {
+        name: 'Rani Devi',
+        age: 24,
+        week: 22,
+        risk: 'Normal',
+        vitals: [
+            { label: 'BP', value: '128/82', status: 'normal', unit: 'mmHg', icon: 'heart-pulse' },
+            { label: 'Hb', value: '10.5', status: 'normal', unit: 'g/dL', icon: 'water' },
+            { label: 'Weight', value: '63', status: 'normal', unit: 'kg', icon: 'scale-bathroom' },
+            { label: 'Sugar', value: '115', status: 'normal', unit: 'mg/dL', icon: 'cup-water' },
+        ],
+        predictions: {
+            bp: {
+                risk: 0.18,
+                level: 'LOW',
+                label: 'BP Risk',
+                reasoning: {
+                    en: ['BP stable at average bounds.'],
+                    hi: ['बीपी सामान्य सीमा के भीतर स्थिर है।']
+                },
+                recs: {
+                    en: ['Regular BP checks.'],
+                    hi: ['नियमित बीपी जांच।']
+                }
+            },
+            diabetes: {
+                risk: 0.20,
+                level: 'LOW',
+                label: 'Diabetes Risk',
+                glucose: 115,
+                reasoning: {
+                    en: ['Blood sugar remains within safe range.'],
+                    hi: ['ब्लड शुगर सुरक्षित सीमा के भीतर है।']
+                },
+                recs: {
+                    en: ['Monitor sugar intake.'],
+                    hi: ['शर्करा के सेवन पर नजर रखें।']
+                }
+            }
+        },
+        nutrition: {
+            avgDailyCalories: 2200,
+            targetCalories: 2200,
+            recommendations: [
+                { label: 'Regular nutrition check', labelHi: 'नियमित पोषण जांच', value: 70, color: '#4CAF50' },
+            ],
+            intake: [
+                { nutrient: 'Iron', nutrientHi: 'आयरन', consumed: 21, required: 27, status: 'good' },
+                { nutrient: 'Calcium', nutrientHi: 'कैल्शियम', consumed: 980, required: 1200, status: 'good' },
+                { nutrient: 'Protein', nutrientHi: 'प्रोटीन', consumed: 67, required: 75, status: 'good' },
+                { nutrient: 'Folic Acid', nutrientHi: 'फॉलिक एसिड', consumed: 340, required: 400, status: 'good' },
+                { nutrient: 'Sodium', nutrientHi: 'सोडियम', consumed: 2100, required: 2300, status: 'good' },
+            ]
+        },
+        alerts: {
+            en: ['All indicators within normal range'],
+            hi: ['सभी संकेतक सामान्य सीमा के भीतर हैं']
+        }
+    }
+};
+
+const getSafeSummary = (summary, isHindi) => {
+    if (!summary) {
+        return {
+            observations: isHindi ? 'कोई अवलोकन उपलब्ध नहीं है।' : 'No observations available.',
+            indicators: [],
+            advice: [],
+            emergency: 'None'
+        };
+    }
+    if (typeof summary === 'string') {
+        return {
+            observations: summary,
+            indicators: [],
+            advice: [],
+            emergency: 'None'
+        };
+    }
+    const subObj = isHindi ? summary.summary_hi : summary.summary_en;
+    if (subObj) {
+        return {
+            observations: subObj.observations || '',
+            indicators: subObj.indicators || [],
+            advice: subObj.advice || [],
+            emergency: subObj.emergency || 'None'
+        };
+    }
+    const legacyText = isHindi ? summary.summary_hi : summary.summary_en;
+    if (typeof legacyText === 'string') {
+        return {
+            observations: legacyText,
+            indicators: [],
+            advice: [],
+            emergency: 'None'
+        };
+    }
+    return {
+        observations: isHindi ? 'कोई अवलोकन उपलब्ध नहीं है।' : 'No observations available.',
+        indicators: [],
+        advice: [],
+        emergency: 'None'
+    };
 };
 
 export default function PatientHistory({ route, navigation }) {
     const { language } = useLanguage();
     const isHindi = language === 'hi';
     const { patientId } = route.params || { patientId: 'user_002' };
-    const patient = PATIENT_DATA[patientId] || PATIENT_DATA['user_002'];
+    const [patient, setPatient] = useState(PATIENT_DATA[patientId] || PATIENT_DATA['user_002']);
 
     const [isAnalysisVisible, setAnalysisVisible] = useState(false);
     const [selectedRisk, setSelectedRisk] = useState(null);
@@ -425,6 +647,92 @@ export default function PatientHistory({ route, navigation }) {
     const [doctorInstructions, setDoctorInstructions] = useState([]);
 
     useEffect(() => {
+        const loadPatientData = async () => {
+            try {
+                const staticPatient = PATIENT_DATA[patientId];
+                const profile = await getUserProfile(patientId);
+                
+                if (profile) {
+                    const vitalsList = await getVitalsHistory(patientId);
+                    const latest = vitalsList && vitalsList.length > 0 ? vitalsList[0] : null;
+
+                    let sys = latest?.systolic || 120;
+                    let dia = latest?.diastolic || 80;
+                    let bpStr = `${sys}/${dia}`;
+                    let hbStr = latest?.hba1c ? String(latest.hba1c) : '11.2';
+                    let weightStr = profile.current_weight_kg ? String(profile.current_weight_kg) : '60';
+                    let sugarStr = latest?.blood_sugar ? String(latest.blood_sugar) : '90';
+
+                    const getBpStatus = (s, d) => (s >= 140 || d >= 90) ? 'high' : (s >= 130 || d >= 80) ? 'warning' : 'normal';
+                    const getSugarStatus = (sg) => sg >= 140 ? 'high' : sg >= 120 ? 'warning' : 'normal';
+
+                    const vitalsArray = [
+                        { label: 'BP', value: bpStr, status: getBpStatus(sys, dia), unit: 'mmHg', icon: 'heart-pulse' },
+                        { label: 'Hb', value: hbStr, status: parseFloat(hbStr) < 11.0 ? 'low' : 'normal', unit: 'g/dL', icon: 'water' },
+                        { label: 'Weight', value: weightStr, status: 'normal', unit: 'kg', icon: 'scale-bathroom' },
+                        { label: 'Sugar', value: sugarStr, status: getSugarStatus(parseFloat(sugarStr)), unit: 'mg/dL', icon: 'cup-water' }
+                    ];
+
+                    let risk = 'Low';
+                    let bpRiskVal = 0.1;
+                    let sugarRiskVal = 0.1;
+                    if (sys >= 140 || dia >= 90) { risk = 'High'; bpRiskVal = 0.85; }
+                    else if (sys >= 130 || dia >= 80) { risk = 'Normal'; bpRiskVal = 0.45; }
+
+                    if (parseFloat(sugarStr) >= 140) { risk = 'High'; sugarRiskVal = 0.9; }
+                    else if (parseFloat(sugarStr) >= 120) { if (risk !== 'High') risk = 'Normal'; sugarRiskVal = 0.5; }
+
+                    const bpReasoningEn = risk === 'High' 
+                        ? ['Elevated Systolic/Diastolic BP detected.', 'Risk of Gestational Hypertension.'] 
+                        : ['BP stable at average bounds.', 'No adverse cardiovascular signs.'];
+                    const bpReasoningHi = risk === 'High' 
+                        ? ['उच्च सिस्टोलिक/डायस्टोलिक बीपी दर्ज किया गया है।', 'जेस्टेशनल हाइपरटेंशन का जोखिम।'] 
+                        : ['बीपी सामान्य सीमा के भीतर स्थिर है।', 'कोई प्रतिकूल लक्षण नहीं पाए गए।'];
+
+                    const sugarReasoningEn = parseFloat(sugarStr) >= 140
+                        ? ['Elevated glucose levels detected.', 'Gestational diabetes risk indicator.']
+                        : ['Blood glucose remains within safe range.', 'Fasting sugar levels optimal.'];
+                    const sugarReasoningHi = parseFloat(sugarStr) >= 140
+                        ? ['ब्लड ग्लूकोज का स्तर बढ़ा हुआ पाया गया है।', 'जेस्टेशनल डायबिटीज का खतरा।']
+                        : ['ब्लड शुगर सामान्य और सुरक्षित सीमा में है।', 'खाली पेट शुगर का स्तर सामान्य है।'];
+
+                    const newPatientData = {
+                        name: profile.name,
+                        age: profile.age || 25,
+                        week: profile.pregnancy_week || 12,
+                        risk: risk,
+                        image: staticPatient?.image || null,
+                        vitals: vitalsArray,
+                        predictions: {
+                            bp: { 
+                                risk: bpRiskVal, 
+                                level: bpRiskVal >= 0.8 ? 'HIGH' : bpRiskVal >= 0.4 ? 'WARNING' : 'LOW', 
+                                label: 'BP Risk', 
+                                reasoning: { en: bpReasoningEn, hi: bpReasoningHi } 
+                            },
+                            diabetes: { 
+                                risk: sugarRiskVal, 
+                                level: sugarRiskVal >= 0.8 ? 'HIGH' : sugarRiskVal >= 0.4 ? 'WARNING' : 'LOW', 
+                                label: 'Diabetes Risk', 
+                                reasoning: { en: sugarReasoningEn, hi: sugarReasoningHi } 
+                            }
+                        },
+                        alerts: {
+                            en: risk === 'High' ? ['Clinical values are elevated'] : ['All indicators within normal range'],
+                            hi: risk === 'High' ? ['लक्षण स्तर सामान्य से अधिक हैं'] : ['सभी संकेतक सामान्य सीमा के भीतर हैं']
+                        }
+                    };
+                    setPatient(newPatientData);
+                } else {
+                    setPatient(staticPatient || PATIENT_DATA['user_002']);
+                }
+            } catch (err) {
+                console.error("Load patient details error:", err);
+                setPatient(PATIENT_DATA['user_002']);
+            }
+        };
+
+        loadPatientData();
         loadVisitHistory();
         loadDoctorInstructions();
     }, [patientId]);
@@ -496,15 +804,19 @@ export default function PatientHistory({ route, navigation }) {
     const processAudio = async (uri) => {
         setIsSavingVisit(true);
         try {
-            const base64Audio = await FileSystem.readAsStringAsync(uri, {
-                encoding: 'base64',
-            });
+            // Transcribe with Sarvam STT (with Gemini fallback)
+            const transcript = await transcribeAudio(uri, language);
 
-            // Call Gemini with actual audio data
-            const summary = await summarizeVisit(base64Audio, true, 'audio/m4a');
+            if (!transcript || transcript === 'NO_SPEECH') {
+                Alert.alert(isHindi ? "धुंधली आवाज़" : "Unclear Audio", isHindi ? "कृपया स्पष्ट बोलें।" : "Please speak more clearly.");
+                return;
+            }
+
+            // Call Gemini to summarize the text transcript
+            const summary = await summarizeVisit(transcript, false);
 
             // Save to database
-            await saveVisitSummary(patientId, "[Audio Content Processed]", summary);
+            await saveVisitSummary(patientId, transcript, summary);
 
             // Reload history
             await loadVisitHistory();
@@ -678,12 +990,24 @@ export default function PatientHistory({ route, navigation }) {
                             <Text style={st.sectionTitle}>{isHindi ? 'डॉक्टर के निर्देश' : 'Doctor\'s Instructions'}</Text>
                         </View>
                         <View style={st.instructionsBox}>
-                            {doctorInstructions.map((inst, idx) => (
-                                <View key={idx} style={st.instructionLine}>
-                                    <Text style={st.instructionText}>• {inst.instruction}</Text>
-                                    <Text style={st.instructionDate}>{new Date(inst.created_at).toLocaleDateString()}</Text>
-                                </View>
-                            ))}
+                            {doctorInstructions.map((inst, idx) => {
+                                let displayInst = inst.instruction;
+                                try {
+                                    if (inst.instruction.startsWith('{')) {
+                                        const parsed = JSON.parse(inst.instruction);
+                                        displayInst = isHindi ? (parsed.hi || parsed.en) : (parsed.en || parsed.hi);
+                                    }
+                                } catch (e) {
+                                    // Fallback to raw text
+                                }
+                                const formattedText = displayInst.trim().startsWith('•') ? displayInst : `• ${displayInst}`;
+                                return (
+                                    <View key={idx} style={st.instructionLine}>
+                                        <Text style={st.instructionText}>{formattedText}</Text>
+                                        <Text style={st.instructionDate}>{new Date(inst.created_at).toLocaleDateString()}</Text>
+                                    </View>
+                                );
+                            })}
                         </View>
                     </View>
                 )}
@@ -719,24 +1043,27 @@ export default function PatientHistory({ route, navigation }) {
                             <MaterialCommunityIcons name="history" size={20} color="#6366F1" />
                             <Text style={st.sectionTitle}>{isHindi ? 'विज़िट इतिहास' : 'Visit History'}</Text>
                         </View>
-                        {visitHistory.map((visit) => (
-                            <TouchableOpacity
-                                key={visit.id}
-                                style={st.visitHistoryCard}
-                                onPress={() => setViewingVisit(visit)}
-                            >
-                                <View style={st.visitCardHeader}>
-                                    <View style={st.visitDateBadge}>
-                                        <MaterialCommunityIcons name="calendar" size={14} color="#6366F1" />
-                                        <Text style={st.visitDate}>{visit.date}</Text>
+                        {visitHistory.map((visit) => {
+                            const safeSum = getSafeSummary(visit.summary, isHindi);
+                            return (
+                                <TouchableOpacity
+                                    key={visit.id}
+                                    style={st.visitHistoryCard}
+                                    onPress={() => setViewingVisit(visit)}
+                                >
+                                    <View style={st.visitCardHeader}>
+                                        <View style={st.visitDateBadge}>
+                                            <MaterialCommunityIcons name="calendar" size={14} color="#6366F1" />
+                                            <Text style={st.visitDate}>{visit.date}</Text>
+                                        </View>
+                                        <MaterialCommunityIcons name="chevron-right" size={20} color="#CCC" />
                                     </View>
-                                    <MaterialCommunityIcons name="chevron-right" size={20} color="#CCC" />
-                                </View>
-                                <Text style={st.visitSnippet} numberOfLines={2}>
-                                    {isHindi ? visit.summary.summary_hi.observations : visit.summary.summary_en.observations}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
+                                    <Text style={st.visitSnippet} numberOfLines={2}>
+                                        {safeSum.observations}
+                                    </Text>
+                                </TouchableOpacity>
+                            );
+                        })}
                     </View>
                 )}
 
@@ -826,37 +1153,43 @@ export default function PatientHistory({ route, navigation }) {
                             </TouchableOpacity>
                         </View>
 
-                        <ScrollView showsVerticalScrollIndicator={false}>
-                            <View style={st.reportSection}>
-                                <Text style={st.reportLabel}>{isHindi ? 'अवलोकन' : 'Observations'}</Text>
-                                <Text style={st.reportText}>
-                                    {isHindi ? viewingVisit?.summary.summary_hi.observations : viewingVisit?.summary.summary_en.observations}
-                                </Text>
-                            </View>
+                        {viewingVisit && (() => {
+                            const safeSum = getSafeSummary(viewingVisit.summary, isHindi);
+                            const safeSumEn = getSafeSummary(viewingVisit.summary, false);
+                            return (
+                                <ScrollView showsVerticalScrollIndicator={false}>
+                                    <View style={st.reportSection}>
+                                        <Text style={st.reportLabel}>{isHindi ? 'अवलोकन' : 'Observations'}</Text>
+                                        <Text style={st.reportText}>
+                                            {safeSum.observations}
+                                        </Text>
+                                    </View>
 
-                            <View style={st.reportSection}>
-                                <Text style={st.reportLabel}>{isHindi ? 'संकेतक' : 'Indicators'}</Text>
-                                {(isHindi ? viewingVisit?.summary.summary_hi.indicators : viewingVisit?.summary.summary_en.indicators)?.map((item, i) => (
-                                    <Text key={i} style={st.listItem}>• {item}</Text>
-                                ))}
-                            </View>
+                                    <View style={st.reportSection}>
+                                        <Text style={st.reportLabel}>{isHindi ? 'संकेतक' : 'Indicators'}</Text>
+                                        {safeSum.indicators.map((item, i) => (
+                                            <Text key={i} style={st.listItem}>• {item}</Text>
+                                        ))}
+                                    </View>
 
-                            <View style={st.reportSection}>
-                                <Text style={st.reportLabel}>{isHindi ? 'दी गई सलाह' : 'Advice'}</Text>
-                                {(isHindi ? viewingVisit?.summary.summary_hi.advice : viewingVisit?.summary.summary_en.advice)?.map((item, i) => (
-                                    <Text key={i} style={st.listItem}>• {item}</Text>
-                                ))}
-                            </View>
+                                    <View style={st.reportSection}>
+                                        <Text style={st.reportLabel}>{isHindi ? 'दी गई सलाह' : 'Advice'}</Text>
+                                        {safeSum.advice.map((item, i) => (
+                                            <Text key={i} style={st.listItem}>• {item}</Text>
+                                        ))}
+                                    </View>
 
-                            {viewingVisit?.summary.summary_en.emergency !== "None" && (
-                                <View style={st.emergencyBox}>
-                                    <MaterialCommunityIcons name="alert-decagram" size={20} color="#FFF" />
-                                    <Text style={st.emergencyText}>
-                                        {isHindi ? viewingVisit?.summary.summary_hi.emergency : viewingVisit?.summary.summary_en.emergency}
-                                    </Text>
-                                </View>
-                            )}
-                        </ScrollView>
+                                    {safeSumEn.emergency !== "None" && safeSum.emergency !== "कोई नहीं" && (
+                                        <View style={st.emergencyBox}>
+                                            <MaterialCommunityIcons name="alert-decagram" size={20} color="#FFF" />
+                                            <Text style={st.emergencyText}>
+                                                {safeSum.emergency}
+                                            </Text>
+                                        </View>
+                                    )}
+                                </ScrollView>
+                            );
+                        })()}
                     </View>
                 </View>
             </Modal>
