@@ -27,6 +27,7 @@ import PeripheralTestScreen from '../screens/eye/tests/PeripheralTestScreen';
 import RoleSelectionScreen from '../screens/auth/RoleSelectionScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import LandingScreen from '../screens/auth/LandingScreen';
+import SignUpScreen from '../screens/auth/SignUpScreen';
 import SetuScreen from '../screens/setu/SetuScreen';
 import SOSScreen from '../screens/emergency/SOSScreen';
 import AuthNavigatorRoutes from '../screens/auth/LandingScreen'; // (not replacing this, just injecting above it)
@@ -78,6 +79,7 @@ function AuthNavigator() {
             <AuthStack.Screen name="Landing" component={LandingScreen} />
             <AuthStack.Screen name="RoleSelection" component={RoleSelectionScreen} />
             <AuthStack.Screen name="Login" component={LoginScreen} />
+            <AuthStack.Screen name="SignUp" component={SignUpScreen} />
         </AuthStack.Navigator>
     );
 }

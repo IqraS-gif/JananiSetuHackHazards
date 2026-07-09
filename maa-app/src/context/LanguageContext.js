@@ -28,7 +28,8 @@ export function LanguageProvider({ children }) {
 
     const setLanguage = useCallback(async (nextLanguage) => {
         // Validate
-        const validLang = ['hi', 'en', 'bilingual'].includes(nextLanguage) ? nextLanguage : 'bilingual';
+        const supportedLanguages = ['hi', 'en', 'bilingual', 'bn', 'gu', 'mr', 'te', 'ta', 'kn', 'ml', 'pa', 'or'];
+        const validLang = supportedLanguages.includes(nextLanguage) ? nextLanguage : 'bilingual';
         setLanguageState(validLang);
         setHasChosenLanguage(true);
         try {
