@@ -3,25 +3,34 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, SafeAreaView, Keyb
 import { Colors } from '../../constants';
 import { useLanguage } from '../../context/LanguageContext';
 import { useUser } from '../../context/UserContext';
+import { checkUserExists, getUserProfile } from '../../services/database/DatabaseService';
 
 export default function LoginScreen({ route, navigation }) {
     const { role } = route.params || { role: 'mother' };
     const { language } = useLanguage();
     const { login } = useUser();
     const [userId, setUserId] = useState('');
-    const [password, setPassword] = useState('');
 
-    const handleLogin = () => {
-        // Simple logic for the demo: 
-        // user_001, user_002 -> Mother
-        // asha_001, asha_002 -> ASHA
+    const handleLogin = async () => {
         let isValid = false;
-        if (role === 'asha') {
-            isValid = (userId === 'asha_001' || userId === 'asha_002');
-        } else if (role === 'doctor') {
-            isValid = (userId === 'dr_001');
-        } else {
-            isValid = (userId === 'user_001' || userId === 'user_002');
+        try {
+            const profile = await getUserProfile(userId);
+            if (profile) {
+                if (profile.role === role) {
+                    isValid = true;
+                }
+            } else {
+                // Fallback for default demo IDs
+                if (role === 'asha') {
+                    isValid = (userId === 'asha_001' || userId === 'asha_002');
+                } else if (role === 'doctor') {
+                    isValid = (userId === 'dr_001');
+                } else {
+                    isValid = (userId === 'user_001' || userId === 'user_002');
+                }
+            }
+        } catch (e) {
+            console.error('[LoginScreen] Check login error:', e);
         }
 
         if (isValid) {
@@ -29,11 +38,13 @@ export default function LoginScreen({ route, navigation }) {
             // No need to navigate here, AppNavigator will switch
         } else {
             let hint = '';
-            if (role === 'asha') hint = '(asha_001 or asha_002)';
-            else if (role === 'doctor') hint = '(dr_001)';
-            else hint = '(user_001 or user_002)';
+            if (role === 'asha') hint = 'asha_001 or your custom ASHA ID';
+            else if (role === 'doctor') hint = 'dr_001 or your custom Doctor ID';
+            else hint = 'user_001, user_002, or your custom ID';
 
-            alert(language === 'hi' ? `अमान्य आईडी ${hint}` : `Invalid ID ${hint}`);
+            alert(language === 'hi' 
+                ? `अमान्य आईडी। सही आईडी दर्ज करें (${hint})` 
+                : `Invalid ID. Please enter a valid ID (${hint})`);
         }
     };
 
@@ -65,34 +76,77 @@ export default function LoginScreen({ route, navigation }) {
                             />
                         </View>
 
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.label}>{language === 'hi' ? 'पासवर्ड' : 'Password'}</Text>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="••••••••"
-                                value={password}
-                                onChangeText={setPassword}
-                                secureTextEntry
-                            />
-                        </View>
-
                         <TouchableOpacity style={styles.loginButton} onPress={handleLogin} activeOpacity={0.9}>
-                            <Text style={styles.loginButtonText}>{language === 'hi' ? 'लॉगिन' : 'Login'}</Text>
+                            <Text style={styles.loginButtonText}>{language === 'hi' ? 'लॉगिन करें' : 'Login'}</Text>
                         </TouchableOpacity>
 
                         <View style={styles.footer}>
                             <Text style={styles.footerText}>
-                                {language === 'hi' ? 'खाता नहीं है?' : "Don't have an account?"}
+                                {language === 'hi' ? 'नया खाता? ' : "Don't have an account? "}
                             </Text>
-                            <TouchableOpacity>
-                                <Text style={styles.signUpText}>{language === 'hi' ? 'रजिस्टर करें' : ' Sign Up'}</Text>
+                            <TouchableOpacity onPress={() => navigation.navigate('SignUp', { role })}>
+                                <Text style={styles.signUpText}>
+                                    {language === 'hi' ? 'साइन अप करें' : 'Sign Up'}
+                                </Text>
                             </TouchableOpacity>
                         </View>
 
-                        <View style={styles.hintBox}>
-                            <Text style={styles.hintText}>
-                                💡 Tip: Use **{role === 'asha' ? 'asha_001' : (role === 'doctor' ? 'dr_001' : 'user_001')}** for demo simulation.
+                        <View style={styles.demoBox}>
+                            <Text style={styles.demoTitle}>
+                                {language === 'hi' ? '🔑 डेमो अकाउंट से लॉगिन करें:' : '🔑 Tap to sign in as demo user:'}
                             </Text>
+                            {role === 'mother' && (
+                                <>
+                                    <TouchableOpacity
+                                        style={styles.demoBtn}
+                                        onPress={() => { setUserId('user_001'); }}
+                                        activeOpacity={0.75}
+                                    >
+                                        <Text style={styles.demoBtnEmoji}>🤰</Text>
+                                        <View>
+                                            <Text style={styles.demoBtnLabel}>Normal User</Text>
+                                            <Text style={styles.demoBtnId}>user_001</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={[styles.demoBtn, styles.demoBtnRisk]}
+                                        onPress={() => { setUserId('user_002'); }}
+                                        activeOpacity={0.75}
+                                    >
+                                        <Text style={styles.demoBtnEmoji}>⚠️</Text>
+                                        <View>
+                                            <Text style={[styles.demoBtnLabel, { color: '#C0392B' }]}>High Risk User</Text>
+                                            <Text style={styles.demoBtnId}>user_002</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </>
+                            )}
+                            {role === 'asha' && (
+                                <TouchableOpacity
+                                    style={styles.demoBtn}
+                                    onPress={() => { setUserId('asha_001'); }}
+                                    activeOpacity={0.75}
+                                >
+                                    <Text style={styles.demoBtnEmoji}>👩‍⚕️</Text>
+                                    <View>
+                                        <Text style={styles.demoBtnLabel}>ASHA Worker</Text>
+                                        <Text style={styles.demoBtnId}>asha_001</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+                            {role === 'doctor' && (
+                                <TouchableOpacity
+                                    style={styles.demoBtn}
+                                    onPress={() => { setUserId('dr_001'); }}
+                                    activeOpacity={0.75}
+                                >
+                                    <Text style={styles.demoBtnEmoji}>👨‍⚕️</Text>
+                                    <View>
+                                        <Text style={styles.demoBtnLabel}>Doctor</Text>
+                                        <Text style={styles.demoBtnId}>dr_001</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
                         </View>
                     </View>
                 </ScrollView>
@@ -202,17 +256,54 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '700',
     },
-    hintBox: {
-        marginTop: 40,
-        backgroundColor: Colors.info + '10',
+    demoBox: {
+        marginTop: 32,
+        backgroundColor: Colors.white,
+        borderRadius: 20,
         padding: 16,
-        borderRadius: 12,
-        borderLeftWidth: 4,
-        borderLeftColor: Colors.info,
+        borderWidth: 1,
+        borderColor: Colors.border,
+        elevation: 3,
+        shadowColor: Colors.black,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.07,
+        shadowRadius: 8,
+        gap: 10,
     },
-    hintText: {
+    demoTitle: {
+        fontSize: 13,
+        fontWeight: '700',
+        color: Colors.textLight,
+        marginBottom: 4,
+        textTransform: 'uppercase',
+        letterSpacing: 0.5,
+    },
+    demoBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: Colors.primary + '10',
+        borderWidth: 1,
+        borderColor: Colors.primary + '30',
+        borderRadius: 14,
+        padding: 14,
+        gap: 14,
+    },
+    demoBtnRisk: {
+        backgroundColor: '#C0392B10',
+        borderColor: '#C0392B30',
+    },
+    demoBtnEmoji: {
+        fontSize: 28,
+    },
+    demoBtnLabel: {
+        fontSize: 15,
+        fontWeight: '700',
+        color: Colors.primary,
+    },
+    demoBtnId: {
         fontSize: 12,
         color: Colors.textLight,
-        lineHeight: 18,
-    }
+        marginTop: 2,
+        fontFamily: 'monospace',
+    },
 });
