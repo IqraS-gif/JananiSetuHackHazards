@@ -186,14 +186,31 @@ function ChatBubble({ role, text, delay, isRunning }) {
 
 // ─── Main Screen ────────────────────────────────────────────────
 export default function AIChatbotScreen({ navigation }) {
-    const { isHindi } = useT();
-    const langCode = isHindi ? 'hi' : 'en';
+    const { language } = useT();
+    const langCode = language;
+
+    const getWelcomeMessage = (lang) => {
+        const welcomes = {
+            'hi': 'नमस्ते! मैं जननी हूँ। आपकी गर्भावस्था के दौरान मैं कैसे मदद कर सकती हूँ?',
+            'bilingual': 'नमस्ते! मैं जननी हूँ। How can I help you during your pregnancy today?',
+            'bn': 'নমস্কার! আমি জননী। গর্ভাবস্থায় আমি আপনাকে কীভাবে সাহায্য করতে পারি?',
+            'gu': 'નમસ્તે! હું જનની છું. ગર્ભાવસ્થા દરમિયાન હું તમને કેવી રીતે મદદ કરી શકું?',
+            'mr': 'नमस्कार! मी जननी आहे. गरोदरपणात मी तुम्हाला कशी मदत करू शकते?',
+            'te': 'నమస్కారం! నేను జనని. గర్భధారణ సమయంలో నేను మీకు ఎలా సహాయపడగలను?',
+            'ta': 'வணக்கம்! நான் ஜனனி. கர்ப்ப காலத்தில் நான் உங்களுக்கு எவ்வாறு உதவ முடியும்?',
+            'kn': 'ನಮಸ್ಕಾರ! ನಾನು ಜನನಿ. ಗರ್ಭಾವಸ್ಥೆಯಲ್ಲಿ ನಾನು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಬಹುದು?',
+            'ml': 'നമസ്കാരം! ഞാൻ ജനനി. ഗർഭകാലത്ത് എനിക്ക് നിങ്ങളെ എങ്ങനെ സഹായിക്കാനാകും?',
+            'pa': 'ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਜਨਨੀ ਹਾਂ। ਗਰਭ ਅਵਸਥਾ ਦੌਰਾਨ ਮੈਂ ਤੁਹਾਡੀ ਕਿਵੇਂ ਮਦਦ ਕਰ ਸਕਦੀ ਹਾਂ?',
+            'or': 'ନମସ୍କାର! ମୁଁ ଜନନୀ। ଗର୍ଭାବସ୍ଥା ସମୟରେ ମୁଁ ଆପଣଙ୍କୁ କିପରି ସାହାଯ୍ୟ କରିପାରିବି?'
+        };
+        return welcomes[lang] || 'Hello! I am Janani. How can I help you during your pregnancy today?';
+    };
 
     const [chatOpen, setChatOpen] = useState(false);
 
     // Chat state
     const [messages, setMessages] = useState([
-        { role: 'ai', text: isHindi ? 'नमस्ते! मैं जननी हूँ। आपकी गर्भावस्था के दौरान मैं कैसे मदद कर सकती हूँ?' : 'Hello! I am Janani. How can I help you during your pregnancy today?' }
+        { role: 'ai', text: getWelcomeMessage(language) }
     ]);
     const [isRecording, setIsRecording] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -339,6 +356,8 @@ export default function AIChatbotScreen({ navigation }) {
                 <Text style={styles.headerTitle}>AI Companion</Text>
                 <View style={{ width: 38 }} />
             </View>
+
+
 
             {/* Canvas */}
             <View style={styles.canvas}>
