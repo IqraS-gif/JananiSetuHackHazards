@@ -1,105 +1,160 @@
-﻿# JananiSetu — AI-Powered Maternal Health Platform
+# 🤱 Janani Setu
 
-> HackHazards Hackathon Submission | Team JananiSetu
-
-JananiSetu bridges the critical gap in maternal healthcare for rural India by connecting pregnant women, ASHA workers, and doctors through a unified AI-powered mobile platform.
+**Janani Setu** is an offline first, AI powered maternal healthcare platform designed to improve maternal care in underserved rural communities. It connects pregnant women, ASHA workers, and doctors through a smart triage system that enables early risk detection, multilingual voice assistance, and intelligent care coordination, even in low connectivity environments.
 
 ---
 
-## Project Structure
+## 🌟 Features
 
-`
-mini-project-sem6/
-   maa-app/          # Expo React Native mobile app (mothers + ASHA + doctors)
-   risk-radar/
-      backend/       # Node.js + Express + MongoDB REST API
-      ml-service/    # Python Flask ML service (pregnancy risk prediction)
-      frontend/      # Web dashboard (doctors)
-`
+### 🧠 AI Powered Risk Detection
+- Maternal risk prediction using XGBoost and LSTM models
+- AI based risk categorization into Low, High, and Critical cases
+- Automated escalation for emergency situations
 
----
+### 📷 Multimodal Health Screening
+- AI ankle swelling detection using computer vision
+- Vision based preeclampsia screening
+- Food image analysis for gestational diabetes guidance
+- Voice biomarker analysis for mental health screening
 
-## Key Features
+### 🎙️ Voice First Experience
+- Multilingual conversational AI
+- Speech to Text for natural voice input
+- Text to Speech responses in multiple Indian languages
+- Voice driven navigation for low literacy users
 
-### For Pregnant Women (Maa App)
-- **Janani AI Chatbot** — voice-first maternal health assistant in 11 Indian languages
-- **Voice Activity Detection** — custom VAD using expo-av decibel metering
-- **Indic TTS** — Sarvam AI bulbul:v3 for natural Hindi/regional speech
-- **AI Meal Logging** — photo -> Gemini Vision -> nutrition analysis
-- **Vitals AI Extraction** — upload PDF/image lab reports, AI auto-fills vitals
-- **Swelling Analysis** — photo-based edema risk screen for preeclampsia detection
-- **Emergency SOS** — GPS + bilingual SMS to multiple contacts in one tap
-- **Eye Health Screen** — AI-powered vision risk assessment via Risk-Radar ML
+### 👩⚕️ Smart ASHA Worker Platform
+- Intelligent patient prioritization
+- Smart route optimization
+- QR based digital data collection
+- Medication adherence tracking
+- Offline data collection with automatic sync
 
-### For ASHA Workers
-- **Smart Route Map** — GPS-sorted patient list with one-tap navigation
-- **AI Visit Summaries** — voice notes -> structured bilingual visit reports
-- **Medication Tracker** — scan medicine strip to log drug name and dose count
-- **QR Patient Registration** — link new mothers with a QR code scan
+### 👨⚕️ Doctor Dashboard
+- Critical patient queue
+- AI assisted decision support
+- Offline data synchronization
+- Real time patient monitoring
 
-### For Doctors
-- **Risk-Stratified Dashboard** — ML-ranked patient list by pregnancy risk
-- **Patient Detail View** — full vitals timeline, ASHA notes, uploaded reports
-- **PDF Report Viewer** — AI-extracted health parameters with Firebase backup
-
-### Entitlement Engine
-- Computes unclaimed government scheme benefits per user profile
-- Covers: PMMVY, Janani Suraksha, PM Poshan, PDS, and 6+ more schemes
-- AI generates personalised voice explanation of entitlement gaps
+### 📡 Offline First Architecture
+- Local SQLite database
+- On device AI processing
+- Automatic synchronization when connectivity returns
+- Designed for remote villages with unreliable internet
 
 ---
 
-## Tech Stack
+## 🏗️ Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Mobile App | Expo SDK 54, React Native 0.81, New Architecture |
-| AI / LLM | Gemini 2.5 Flash, Sarvam sarvam-30b, Groq LLaMA-3 |
-| STT | Sarvam saaras:v3, Gemini multimodal, Groq Whisper |
-| TTS | Sarvam bulbul:v3, expo-speech (fallback) |
-| Local DB | expo-sqlite (offline-first relational DB) |
-| Cloud | Firebase Storage, Firebase Auth |
-| Backend | Node.js, Express, MongoDB, JWT |
-| ML Service | Python, Flask, scikit-learn, pandas |
-| Build | EAS Build (preview APK + production AAB) |
+### Frontend
+- React Native
+- Expo
 
----
+### Backend
+- FastAPI
+- Python
+- REST APIs
 
-## Setup
+### Database
+- Firebase Firestore
+- SQLite
 
-### Mobile App (maa-app)
-`ash
-cd maa-app
-cp .env.example .env     # Fill in your API keys
-npm install
-npx expo start
-`
+### Artificial Intelligence
+- XGBoost
+- LSTM
+- Computer Vision
+- CLAHE Image Enhancement
+- Large Language Models
+- Retrieval Augmented Generation (RAG)
 
-### Backend (risk-radar/backend)
-`ash
-cd risk-radar/backend
-cp .env.example .env     # Fill in MONGO_URI and JWT_SECRET
-npm install
-node server.js
-`
-
-### ML Service (risk-radar/ml-service)
-`ash
-cd risk-radar/ml-service
-pip install -r requirements.txt
-python train_model.py
-python app.py
-`
+### Speech AI
+- Sarvam AI
+- Speech to Text
+- Text to Speech
+- Voice Activity Detection
 
 ---
 
-## Environment Variables
+## 🚀 Key Capabilities
 
-See maa-app/.env.example and isk-radar/backend/.env.example for all required variables.
-**Never commit real credentials to version control.**
+- Offline first maternal healthcare
+- AI powered maternal risk prediction
+- Smart triage and emergency escalation
+- Computer vision based health screening
+- Voice first multilingual experience
+- AI powered health guidance
+- Automated ASHA workflow management
+- Intelligent doctor referral system
+- Digital health record synchronization
 
 ---
 
-## Team
+## 📱 Workflow
 
-Built with care for rural India at HackHazards.
+1. Pregnant woman records symptoms using voice or images.
+2. AI analyzes health data using machine learning and computer vision.
+3. Risk score is generated automatically.
+4. Cases are classified as Low, High, or Critical.
+5. ASHA workers receive prioritized patient lists.
+6. Critical patients are immediately escalated to doctors.
+7. Health records synchronize automatically when internet becomes available.
+
+---
+
+## 💡 Challenges Solved
+
+- Delayed maternal risk detection
+- Limited healthcare access in rural regions
+- Shortage of doctors
+- Manual paperwork for ASHA workers
+- Poor internet connectivity
+- Low digital literacy
+- Language barriers
+- Lack of early intervention
+
+---
+
+## 🎯 Core USP
+
+- Offline first AI platform
+- Multimodal AI based health screening
+- Smart triage and emergency alerts
+- Voice first multilingual experience
+- AI assisted ASHA workflow optimization
+- Seamless coordination between patients, ASHA workers, and doctors
+
+---
+
+## 🌍 Impact
+
+Janani Setu empowers rural communities by enabling early maternal risk detection, reducing delays in medical intervention, improving healthcare accessibility through multilingual voice interfaces, and supporting frontline healthcare workers with intelligent decision making tools.
+
+---
+
+## 📂 Repository Structure
+
+```
+Janani-Setu/
+│── app/                 # React Native application
+│── backend/             # FastAPI backend
+│── models/              # AI and ML models
+│── database/            # Database configuration
+│── assets/              # Images and icons
+│── docs/                # Documentation
+│── README.md
+```
+
+---
+
+## 🔮 Future Enhancements
+
+- Wearable health device integration
+- Real time telemedicine consultations
+
+---
+
+## 👥 Team
+
+Developed with the goal of making quality maternal healthcare accessible to every mother, regardless of connectivity, language, or location.
+
+**AI for Healthcare • Offline First • Voice First • Built for Bharat 🇮🇳**
