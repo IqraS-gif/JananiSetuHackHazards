@@ -5,7 +5,10 @@ const User = require('../models/User');
 
 // Generate JWT
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET || 'replace_this_with_a_secure_secret', {
+    if (!process.env.JWT_SECRET) {
+        throw new Error('JWT_SECRET environment variable is not set. Set it in your .env file.');
+    }
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: '30d',
     });
 };

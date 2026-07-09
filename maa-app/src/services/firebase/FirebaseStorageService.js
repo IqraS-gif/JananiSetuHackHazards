@@ -33,6 +33,7 @@ export const uploadReportToFirebase = async (localUri, fileName) => {
 
         // Use Firebase Storage REST API to completely bypass the buggy SDK blobbing issue on Android
         const bucket = firebaseConfig.storageBucket;
+        if (!bucket) throw new Error('Firebase storageBucket is not configured. Check EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET in your .env file.');
         const uploadPath = `reports/${fileName}`;
         const url = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o?name=${encodeURIComponent(uploadPath)}`;
 
@@ -65,7 +66,7 @@ export const uploadReportToFirebase = async (localUri, fileName) => {
 
         return downloadURL;
     } catch (error) {
-        console.error('Firebase Storage Base64 Upload Error:', error);
+        console.warn('Firebase Storage Base64 Upload Error:', error);
         throw error;
     }
 };

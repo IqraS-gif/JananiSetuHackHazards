@@ -7,7 +7,7 @@ module.exports = async (req, res, next) => {
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
             token = req.headers.authorization.split(' ')[1];
-            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'replace_this_with_a_secure_secret');
+            const decoded = jwt.verify(token, process.env.JWT_SECRET || (() => { throw new Error('JWT_SECRET is not set'); })());
             req.user = await User.findById(decoded.id).select('-password');
             next();
         } catch (error) {
