@@ -27,6 +27,7 @@ import ScanLoadingAnimation from '../../components/ui/ScanLoadingAnimation';
 import designSystem from '../../theme/designSystem';
 import * as Location from 'expo-location';
 import { useT } from '../../i18n/useT';
+import { useUser } from '../../context/UserContext';
 import {
     getDailySummary,
     getNextANC,
@@ -57,6 +58,7 @@ function parseCheckups(rawValue) {
 
 export default function HomeScreen({ navigation }) {
     const { t, isHindi, isBilingual } = useT();
+    const { user } = useUser();
 
     const [profile, setProfile] = useState(null);
     const [dailySummary, setDailySummary] = useState(null);
@@ -71,8 +73,8 @@ export default function HomeScreen({ navigation }) {
     const loadData = useCallback(async () => {
         setLoadError('');
         try {
-            console.log('[HomeScreen] Loading Profile...');
-            const userProfile = await getUserProfile();
+            console.log('[HomeScreen] Loading Profile for patient:', user?.id);
+            const userProfile = await getUserProfile(user?.id || 'user_001');
             console.log('[HomeScreen] Profile loaded:', userProfile?.name);
             setProfile(userProfile);
 
@@ -95,7 +97,7 @@ export default function HomeScreen({ navigation }) {
             setLoading(false);
             setRefreshing(false);
         }
-    }, []);
+    }, [user?.id]);
 
     useEffect(() => {
         loadData();
