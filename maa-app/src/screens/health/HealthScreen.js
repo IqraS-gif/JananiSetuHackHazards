@@ -53,6 +53,7 @@ import { analyzeSwellingFromImage, assessSwellingOffline, extractHealthDataFromP
 import { extractHealthDataFromReport } from '../../services/ai/GroqService';
 import { useT } from '../../i18n/useT';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useUser } from '../../context/UserContext';
 import { uploadReportToFirebase } from '../../services/firebase/FirebaseStorageService';
 
 
@@ -75,6 +76,7 @@ const SEVERITY_LEVELS = [
 
 export default function HealthScreen() {
     const { t, isHindi, isBilingual, isEnglish } = useT();
+    const { user } = useUser();
     const [profile, setProfile] = useState(null);
     const [weights, setWeights] = useState([]);
     const [anc, setAnc] = useState([]);
@@ -125,17 +127,18 @@ export default function HealthScreen() {
 
     const loadData = useCallback(async () => {
         setLoadError('');
+        const patientId = user?.id || 'user_001';
         try {
-            const userProfile = await getUserProfile();
+            const userProfile = await getUserProfile(patientId);
             setProfile(userProfile);
-            setWeights(await getWeightHistory());
+            setWeights(await getWeightHistory(patientId));
             setAnc(await getANCSchedule());
             setSuppHistory(await getSupplementAdherence(7));
 
-            // New health data
-            setKickHistory(await getKickHistory('user_001', 5));
-            setVitalsHistory(await getVitalsHistory('user_001'));
-            setSymptomHistory(await getSymptomHistory('user_001', 5));
+            // New health data — always use logged-in user's ID
+            setKickHistory(await getKickHistory(patientId, 5));
+            setVitalsHistory(await getVitalsHistory(patientId));
+            setSymptomHistory(await getSymptomHistory(patientId, 5));
             setSwellingHistory(await getSwellingHistory(5));
         } catch (error) {
             console.error('[HealthScreen] load error:', error);
@@ -144,7 +147,7 @@ export default function HealthScreen() {
             setLoading(false);
             setRefreshing(false);
         }
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         loadData();
