@@ -1,4 +1,4 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+﻿# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 # dependencies
 node_modules/
@@ -26,20 +26,39 @@ npm-debug.*
 yarn-debug.*
 yarn-error.*
 
-# macOS
+# macOS / Windows
 .DS_Store
+Thumbs.db
 *.pem
 
-# local env files
+# local env files - NEVER commit these
 .env
-.env*.local
+.env.*
+!.env.example
+
+# Firebase / Google credentials - NEVER commit these
 credentials.json
 *-firebase-adminsdk-*.json
 firebase-credentials.json
 google-services.json
+google-services.plist
 
 # typescript
 *.tsbuildinfo
 
 # generated native folders
 /ios
+/android
+
+# Python cache (seed scripts)
+__pycache__/
+*.pyc
+*.pyo
+
+# Large generated data files (too big for git)
+full_database_export.csv
+maa_app_database_final.csv
+seed_data.json
+learn_content.json
+nutrition_dataset.csv
+pregnancy_data.csv

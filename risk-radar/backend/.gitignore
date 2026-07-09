@@ -1,0 +1,12 @@
+﻿# Node
+node_modules/
+npm-debug.log*
+
+# Environment - NEVER commit these
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
