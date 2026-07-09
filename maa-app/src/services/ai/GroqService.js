@@ -1,5 +1,52 @@
-const GROQ_API_KEY = process.env.EXPO_PUBLIC_GROQ_API_KEY; // Managed via .env for security
+const _parseKeys = (envVal) => (envVal || '').split(',').map(k => k.trim()).filter(Boolean);
+const GROQ_KEYS = _parseKeys(process.env.EXPO_PUBLIC_GROQ_API_KEY);
+let _groqIdx = 0;
+
+function getGroqKey() { return GROQ_KEYS[_groqIdx] || ''; }
+function rotateGroq() { _groqIdx = (_groqIdx + 1) % Math.max(GROQ_KEYS.length, 1); console.warn(`[KeyRotate] Groq → key ${_groqIdx}`); }
+const _shouldRotate = (status) => status === 401 || status === 403 || status === 429;
+
+const GROQ_API_KEY = GROQ_KEYS[0] || ''; // Managed via .env for security
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+
+async function fetchGroq(url, options = {}) {
+    if (GROQ_KEYS.length === 0) {
+        throw new Error("Groq API Key is missing.");
+    }
+    let lastError;
+    for (let attempt = 0; attempt < GROQ_KEYS.length; attempt++) {
+        const key = getGroqKey();
+        try {
+            const headers = {
+                ...(options.headers || {}),
+                'Authorization': `Bearer ${key}`
+            };
+            const response = await fetch(url, {
+                ...options,
+                headers
+            });
+            if (_shouldRotate(response.status)) {
+                console.warn(`[KeyRotate] Groq key ${_groqIdx} status ${response.status}, rotating...`);
+                rotateGroq();
+                lastError = new Error(`Groq key rejected (${response.status})`);
+                continue;
+            }
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.error?.message || `Groq API failed: ${response.status}`);
+            }
+            return data;
+        } catch (err) {
+            lastError = err;
+            if (_shouldRotate(err?.status)) {
+                rotateGroq();
+                continue;
+            }
+            throw err;
+        }
+    }
+    throw lastError || new Error('All Groq keys exhausted');
+}
 
 /**
  * Generate dynamic nutritional insights using Groq.
@@ -45,10 +92,9 @@ export async function getDynamicInsights(foodItems, nutritionTotals) {
             Do not include extra text.
         `;
 
-        const response = await fetch(GROQ_API_URL, {
+        const data = await fetchGroq(GROQ_API_URL, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${GROQ_API_KEY}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -59,7 +105,6 @@ export async function getDynamicInsights(foodItems, nutritionTotals) {
             })
         });
 
-        const data = await response.json();
         const content = JSON.parse(data.choices[0].message.content);
 
         return {
@@ -89,21 +134,11 @@ export async function transcribeAudio(uri) {
         formData.append('language', 'hi'); // Default to Hindi for JananiSetu
         formData.append('response_format', 'json');
 
-        const response = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+        const data = await fetchGroq('https://api.groq.com/openai/v1/audio/transcriptions', {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${GROQ_API_KEY}`,
-            },
             body: formData,
         });
 
-        if (!response.ok) {
-            const errBody = await response.text();
-            console.error('[Groq STT] Error:', errBody);
-            throw new Error(`Groq STT failed: ${response.status}`);
-        }
-
-        const data = await response.json();
         return data.text;
     } catch (error) {
         console.error('[Groq STT] Error transcribing audio:', error);
@@ -144,10 +179,9 @@ export async function getAIFoodNutrition(text, excludedItems = []) {
             Return an empty array [] if no food item is found. No extra text.
         `;
 
-        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        const result = await fetchGroq('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${GROQ_API_KEY}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -158,9 +192,6 @@ export async function getAIFoodNutrition(text, excludedItems = []) {
             }),
         });
 
-        if (!response.ok) throw new Error(`Groq API failed: ${response.status}`);
-
-        const result = await response.json();
         let content = JSON.parse(result.choices[0].message.content);
 
         // Return the array directly if it's the root, or check for common keys
@@ -190,10 +221,9 @@ export async function extractFoodNames(text) {
             If no foods found, return [].
         `;
 
-        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        const result = await fetchGroq('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${GROQ_API_KEY}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -204,9 +234,6 @@ export async function extractFoodNames(text) {
             }),
         });
 
-        if (!response.ok) throw new Error(`Groq API failed: ${response.status}`);
-
-        const result = await response.json();
         const content = JSON.parse(result.choices[0].message.content);
 
         if (Array.isArray(content)) return content;
@@ -240,10 +267,9 @@ export async function verifyDirection(targetDir, userSpeech) {
             Return ONLY the word "right" or "wrong". No punctuation or extra text.
         `;
 
-        const response = await fetch(GROQ_API_URL, {
+        const result = await fetchGroq(GROQ_API_URL, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${GROQ_API_KEY}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -253,9 +279,6 @@ export async function verifyDirection(targetDir, userSpeech) {
             }),
         });
 
-        if (!response.ok) throw new Error(`Groq API failed: ${response.status}`);
-
-        const result = await response.json();
         const content = result.choices[0].message.content.toLowerCase().trim();
 
         if (content.includes('right')) return 'right';
@@ -306,14 +329,13 @@ export async function extractHealthDataFromReport(base64Image) {
     `;
 
     try {
-        const response = await fetch(GROQ_API_URL, {
+        const data = await fetchGroq(GROQ_API_URL, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${GROQ_API_KEY}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                model: 'llama-3.2-11b-vision-preview',
+                model: 'meta-llama/llama-4-scout-17b-16e-instruct',
                 messages: [
                     {
                         role: 'user',
@@ -333,13 +355,6 @@ export async function extractHealthDataFromReport(base64Image) {
             }),
         });
 
-        if (!response.ok) {
-            const err = await response.json();
-            console.error('[Groq Extraction] API Error:', err);
-            throw new Error(err.error?.message || `Groq API failed: ${response.status}`);
-        }
-
-        const data = await response.json();
         const content = JSON.parse(data.choices[0].message.content);
 
         console.log('[Groq Extraction] Success:', content);
@@ -394,10 +409,9 @@ export async function getAIFoodItemsFromText(text) {
             If no food is found, return []. No conversational text.
         `;
 
-        const response = await fetch(GROQ_API_URL, {
+        const result = await fetchGroq(GROQ_API_URL, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${GROQ_API_KEY}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -408,9 +422,6 @@ export async function getAIFoodItemsFromText(text) {
             }),
         });
 
-        if (!response.ok) throw new Error(`Groq API failed: ${response.status}`);
-
-        const result = await response.json();
         const content = JSON.parse(result.choices[0].message.content);
 
         // Normalize the return value
