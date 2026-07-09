@@ -1,94 +1,105 @@
-# JananiSetu 2.0 (जननी सेतु) 🤱
+﻿# JananiSetu — AI-Powered Maternal Health Platform
 
-**JananiSetu 2.0** is a comprehensive digital health ecosystem designed to support maternal and prenatal care in India. It combines a production-grade mobile application for mothers with advanced risk assessment tools powered by machine learning.
+> HackHazards Hackathon Submission | Team JananiSetu
 
----
-
-## 🏗️ Project Structure
-
-This repository is a monorepo containing the following core components:
-
-| Component | Path | Description |
-| :--- | :--- | :--- |
-| **Maa App** | [`/maa-app`](./maa-app) | React Native (Expo) mobile app for nutrition, ANC tracking, and health monitoring. |
-| **Risk Radar** | [`/risk-radar`](./risk-radar) | Web-based vision screening and ML-powered eye health risk assessment. |
-| **Database** | [`/database`](./database) | Unified seed data and nutrition datasets (7,000+ items). |
+JananiSetu bridges the critical gap in maternal healthcare for rural India by connecting pregnant women, ASHA workers, and doctors through a unified AI-powered mobile platform.
 
 ---
 
-## 🚀 Quick Setup Guide
+## Project Structure
 
-Follow these steps to get the entire ecosystem running on your local machine.
+`
+mini-project-sem6/
+   maa-app/          # Expo React Native mobile app (mothers + ASHA + doctors)
+   risk-radar/
+      backend/       # Node.js + Express + MongoDB REST API
+      ml-service/    # Python Flask ML service (pregnancy risk prediction)
+      frontend/      # Web dashboard (doctors)
+`
 
-### 1. Prerequisites
-- **Node.js** (v18+)
-- **Python** (3.8+)
-- **Expo Go** app (installed on your mobile device)
-- **MongoDB** (running locally on port 27017)
+---
 
-### 2. Mobile App Setup (Maa App)
-The mobile app is the primary interface for expectant mothers.
+## Key Features
 
-```bash
+### For Pregnant Women (Maa App)
+- **Janani AI Chatbot** — voice-first maternal health assistant in 11 Indian languages
+- **Voice Activity Detection** — custom VAD using expo-av decibel metering
+- **Indic TTS** — Sarvam AI bulbul:v3 for natural Hindi/regional speech
+- **AI Meal Logging** — photo -> Gemini Vision -> nutrition analysis
+- **Vitals AI Extraction** — upload PDF/image lab reports, AI auto-fills vitals
+- **Swelling Analysis** — photo-based edema risk screen for preeclampsia detection
+- **Emergency SOS** — GPS + bilingual SMS to multiple contacts in one tap
+- **Eye Health Screen** — AI-powered vision risk assessment via Risk-Radar ML
+
+### For ASHA Workers
+- **Smart Route Map** — GPS-sorted patient list with one-tap navigation
+- **AI Visit Summaries** — voice notes -> structured bilingual visit reports
+- **Medication Tracker** — scan medicine strip to log drug name and dose count
+- **QR Patient Registration** — link new mothers with a QR code scan
+
+### For Doctors
+- **Risk-Stratified Dashboard** — ML-ranked patient list by pregnancy risk
+- **Patient Detail View** — full vitals timeline, ASHA notes, uploaded reports
+- **PDF Report Viewer** — AI-extracted health parameters with Firebase backup
+
+### Entitlement Engine
+- Computes unclaimed government scheme benefits per user profile
+- Covers: PMMVY, Janani Suraksha, PM Poshan, PDS, and 6+ more schemes
+- AI generates personalised voice explanation of entitlement gaps
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Mobile App | Expo SDK 54, React Native 0.81, New Architecture |
+| AI / LLM | Gemini 2.5 Flash, Sarvam sarvam-30b, Groq LLaMA-3 |
+| STT | Sarvam saaras:v3, Gemini multimodal, Groq Whisper |
+| TTS | Sarvam bulbul:v3, expo-speech (fallback) |
+| Local DB | expo-sqlite (offline-first relational DB) |
+| Cloud | Firebase Storage, Firebase Auth |
+| Backend | Node.js, Express, MongoDB, JWT |
+| ML Service | Python, Flask, scikit-learn, pandas |
+| Build | EAS Build (preview APK + production AAB) |
+
+---
+
+## Setup
+
+### Mobile App (maa-app)
+`ash
 cd maa-app
+cp .env.example .env     # Fill in your API keys
 npm install
-```
+npx expo start
+`
 
-#### 🔑 Environment Variables
-Create a `.env` file in the `maa-app/` directory and add your Firebase and API keys:
-
-```env
-# Firebase Configuration
-EXPO_PUBLIC_FIREBASE_API_KEY=your_api_key
-EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-EXPO_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.firebasestorage.app
-EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-EXPO_PUBLIC_FIREBASE_APP_ID=your_app_id
-EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
-
-# AI Services
-EXPO_PUBLIC_SERPAPI_KEY=your_serpapi_key
-EXPO_PUBLIC_GROQ_API_KEY=your_groq_key
-EXPO_PUBLIC_GEMINI_API_KEY=your_gemini_key
-```
-
-#### Run the App
-```bash
-npx expo start -c
-```
-*Scan the QR code with **Expo Go** (Android) or the **Camera App** (iOS).*
-
----
-
-### 3. Web & ML Setup (Risk Radar)
-Risk Radar provides the backend and ML services for vision health screening.
-
-#### ML Service (Terminal 1)
-```bash
-cd risk-radar/ml-service
-python setup.py   # Installs dependencies & trains model
-python app.py     # Runs on http://localhost:5001
-```
-
-#### Backend (Terminal 2)
-```bash
+### Backend (risk-radar/backend)
+`ash
 cd risk-radar/backend
+cp .env.example .env     # Fill in MONGO_URI and JWT_SECRET
 npm install
-npm run dev       # Runs on http://localhost:5000
-```
+node server.js
+`
 
-#### Frontend (Terminal 3)
-```bash
-cd risk-radar/frontend
-npx http-server -p 8080
-```
+### ML Service (risk-radar/ml-service)
+`ash
+cd risk-radar/ml-service
+pip install -r requirements.txt
+python train_model.py
+python app.py
+`
 
 ---
 
-## 🔒 Security & Privacy
-- **Local-First**: Patient data in the mobile app is stored locally in SQLite and is not uploaded to any central cloud without explicit action.
-- **Environment Safety**: All secrets are managed via `.env` files and are excluded from version control via `.gitignore`.
+## Environment Variables
 
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+See maa-app/.env.example and isk-radar/backend/.env.example for all required variables.
+**Never commit real credentials to version control.**
+
+---
+
+## Team
+
+Built with care for rural India at HackHazards.
