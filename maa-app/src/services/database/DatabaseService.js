@@ -9,7 +9,7 @@ import foodsData from '../../../database/seed-data/foods.json';
 import requirementsData from '../../../database/seed-data/requirements.json';
 import { ANCSchedule } from '../../constants';
 
-const DB_NAME = 'maa_app_fresh.db';
+const DB_NAME = 'maa_app_fresh_v2.db';
 let db = null;
 let dbPromise = null;
 
@@ -85,6 +85,16 @@ export async function initDatabase() {
             } catch (e) { /* already exists */ }
         }
 
+        try {
+            await database.runAsync("ALTER TABLE user_profile ADD COLUMN patient_id TEXT DEFAULT 'user_001'");
+            console.log('[DB] Added patient_id to user_profile');
+        } catch (e) { /* already exists */ }
+
+        try {
+            await database.runAsync("ALTER TABLE user_profile ADD COLUMN role TEXT DEFAULT 'mother'");
+            console.log('[DB] Added role to user_profile');
+        } catch (e) { /* already exists */ }
+
         // NEW TABLE: Doctor Instructions
         await database.runAsync(`
             CREATE TABLE IF NOT EXISTS doctor_instructions (
@@ -105,6 +115,8 @@ export async function initDatabase() {
         console.log('[DB] ANC seeded');
         await seedSupplementSchedule(database);
         console.log('[DB] Supplements seeded');
+        await seedDemoHealthData(database);
+        console.log('[DB] Demo health data seeded');
         console.log('[DB] Database initialized successfully');
         return database;
     } catch (error) {
@@ -124,6 +136,8 @@ async function createTables(database) {
     await run(`
       CREATE TABLE IF NOT EXISTS user_profile (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        patient_id TEXT UNIQUE DEFAULT 'user_001',
+        role TEXT DEFAULT 'mother',
         name TEXT NOT NULL,
         age INTEGER,
         lmp_date TEXT,
@@ -133,6 +147,8 @@ async function createTables(database) {
         start_weight_kg REAL,
         current_weight_kg REAL,
         language TEXT DEFAULT 'hi',
+        dialect TEXT DEFAULT 'standard',
+        district TEXT,
         asha_contact TEXT,
         emergency_contact TEXT,
         husband_contact TEXT,
@@ -442,6 +458,18 @@ async function createTables(database) {
             await run('ALTER TABLE user_profile ADD COLUMN pmmvy_claimed TEXT');
             await run('ALTER TABLE user_profile ADD COLUMN jsy_registered INTEGER DEFAULT 0');
         }
+
+        const hasDialect = userInfo.some(col => col.name === 'dialect');
+        if (!hasDialect) {
+            console.log('[DB] Migrating: Adding dialect to user_profile');
+            await run("ALTER TABLE user_profile ADD COLUMN dialect TEXT DEFAULT 'standard'");
+        }
+
+        const hasDistrict = userInfo.some(col => col.name === 'district');
+        if (!hasDistrict) {
+            console.log('[DB] Migrating: Adding district to user_profile');
+            await run("ALTER TABLE user_profile ADD COLUMN district TEXT");
+        }
     } catch (e) {
         console.error('[DB] Migration error:', e);
     }
@@ -545,42 +573,193 @@ async function seedSupplementSchedule(database) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// DEMO HEALTH DATA SEED
+// ═══════════════════════════════════════════════════════════════════════════════
+
+async function seedDemoHealthData(database) {
+    // Only seed once — check if demo vitals already exist
+    const existing = await database.getFirstAsync(
+        "SELECT COUNT(*) as cnt FROM vitals_logs WHERE patient_id = 'user_001'"
+    );
+    if (existing && existing.cnt > 0) {
+        console.log('[DB] Demo health data already present, skipping.');
+        return;
+    }
+
+    console.log('[DB] Seeding demo health data for all patient roster items...');
+
+    // ── User Profiles ────────────────
+    const profilesToSeed = [
+        { pid: 'user_001', name: 'Anjali Sharma', age: 23, lmp: '2025-10-30', due: '2026-08-06', week: 32, weight: 62.0 },
+        { pid: 'user_002', name: 'Sunita Devi', age: 26, lmp: '2025-11-27', due: '2026-09-03', week: 28, weight: 75.0 },
+        { pid: 'user_003', name: 'Meena Kumari', age: 29, lmp: '2026-03-05', due: '2026-12-10', week: 14, weight: 62.0 },
+        { pid: 'user_004', name: 'Pooja Varma', age: 24, lmp: '2026-01-22', due: '2026-10-29', week: 20, weight: 60.0 },
+        { pid: 'user_010', name: 'Rani Devi', age: 24, lmp: '2026-01-08', due: '2026-10-15', week: 22, weight: 63.0 }
+    ];
+
+    for (const p of profilesToSeed) {
+        const hasProfile = await database.getFirstAsync("SELECT id FROM user_profile WHERE patient_id = ?", [p.pid]);
+        if (!hasProfile) {
+            await database.runAsync(
+                `INSERT INTO user_profile
+                 (patient_id, role, name, age, lmp_date, due_date, pregnancy_week, height_cm,
+                  start_weight_kg, current_weight_kg, language, asha_contact, emergency_contact, husband_contact)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [p.pid, 'mother', p.name, p.age, p.lmp, p.due, p.week, 158.0, p.weight - 6, p.weight, 'hi', '9876543210', '9123456780', '9123456780']
+            );
+        }
+    }
+
+    const hasAsha = await database.getFirstAsync("SELECT id FROM user_profile WHERE patient_id = 'asha_001'");
+    if (!hasAsha) {
+        await database.runAsync(
+            `INSERT INTO user_profile
+             (patient_id, role, name, age, husband_contact, state, pmmvy_claimed)
+             VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            ['asha_001', 'asha', 'Suman Lata', 34, '9876543210', 'Sector 4, Varanasi District', 'Varanasi Area PHC']
+        );
+    }
+
+    const hasDr = await database.getFirstAsync("SELECT id FROM user_profile WHERE patient_id = 'dr_001'");
+    if (!hasDr) {
+        await database.runAsync(
+            `INSERT INTO user_profile
+             (patient_id, role, name, age, husband_contact, state, ration_category, pmmvy_claimed)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            ['dr_001', 'doctor', 'Dr. S. K. Gupta', 45, '9988776655', 'City Maternal Hospital', 'OB/GYN', 'MCI-9988']
+        );
+    }
+
+    // ── Vitals logs ──────────────────
+    const vitalsLogs = [
+        // user_001 (Anjali Sharma - Normal/Low)
+        { sys: 118, dia: 78, sugar: 98, date: '2026-06-04', time: '09:00', pid: 'user_001' },
+        { sys: 120, dia: 76, sugar: 95, date: '2026-06-11', time: '08:45', pid: 'user_001' },
+        // user_002 (Sunita Devi - High Risk)
+        { sys: 145, dia: 95, sugar: 188, date: '2026-06-04', time: '09:00', pid: 'user_002' },
+        { sys: 148, dia: 96, sugar: 192, date: '2026-06-11', time: '08:30', pid: 'user_002' },
+        // user_003 (Meena Kumari - Normal/Medium)
+        { sys: 122, dia: 80, sugar: 110, date: '2026-06-04', time: '09:00', pid: 'user_003' },
+        { sys: 124, dia: 82, sugar: 112, date: '2026-06-11', time: '09:15', pid: 'user_003' },
+        // user_004 (Pooja Varma - Low Risk)
+        { sys: 116, dia: 76, sugar: 95, date: '2026-06-04', time: '09:00', pid: 'user_004' },
+        { sys: 118, dia: 78, sugar: 97, date: '2026-06-11', time: '10:00', pid: 'user_004' },
+        // user_010 (Rani Devi - Normal/Medium)
+        { sys: 128, dia: 82, sugar: 115, date: '2026-06-04', time: '09:00', pid: 'user_010' },
+        { sys: 130, dia: 84, sugar: 118, date: '2026-06-11', time: '09:30', pid: 'user_010' }
+    ];
+
+    for (const v of vitalsLogs) {
+        await database.runAsync(
+            `INSERT INTO vitals_logs (systolic, diastolic, blood_sugar, date, time, patient_id)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [v.sys, v.dia, v.sugar, v.date, v.time, v.pid]
+        );
+    }
+
+    // ── Weight logs ──────────────────
+    const weightLogs = [
+        { kg: 62.0, week: 32, date: '2026-06-11', pid: 'user_001' },
+        { kg: 75.0, week: 28, date: '2026-06-11', pid: 'user_002' },
+        { kg: 62.0, week: 14, date: '2026-06-11', pid: 'user_003' },
+        { kg: 60.0, week: 20, date: '2026-06-11', pid: 'user_004' },
+        { kg: 63.0, week: 22, date: '2026-06-11', pid: 'user_010' }
+    ];
+
+    for (const w of weightLogs) {
+        await database.runAsync(
+            `INSERT INTO weight_tracking (weight_kg, week_of_pregnancy, date, patient_id)
+             VALUES (?, ?, ?, ?)`,
+            [w.kg, w.week, w.date, w.pid]
+        );
+    }
+
+    // ── Kick & Symptom logs ──────────
+    const kicks = [
+        { count: 14, dur: 45, date: '2026-06-11', pid: 'user_001' },
+        { count: 8,  dur: 60, date: '2026-06-11', pid: 'user_002' },
+        { count: 12, dur: 50, date: '2026-06-11', pid: 'user_003' },
+        { count: 15, dur: 40, date: '2026-06-11', pid: 'user_004' },
+        { count: 11, dur: 55, date: '2026-06-11', pid: 'user_010' }
+    ];
+
+    for (const k of kicks) {
+        await database.runAsync(
+            `INSERT INTO kick_logs (count, duration_min, date, patient_id)
+             VALUES (?, ?, ?, ?)`,
+            [k.count, k.dur, k.date, k.pid]
+        );
+    }
+
+    const symptoms = [
+        { sym: 'swelling', sev: 'severe', date: '2026-06-11', pid: 'user_002' },
+        { sym: 'headache', sev: 'severe', date: '2026-06-11', pid: 'user_002' },
+        { sym: 'blurred_vision', sev: 'moderate', date: '2026-06-11', pid: 'user_002' },
+        { sym: 'nausea', sev: 'mild', date: '2026-06-11', pid: 'user_003' }
+    ];
+
+    for (const s of symptoms) {
+        await database.runAsync(
+            `INSERT INTO symptom_logs (symptom_id, severity, date, patient_id)
+             VALUES (?, ?, ?, ?)`,
+            [s.sym, s.sev, s.date, s.pid]
+        );
+    }
+
+    console.log('[DB] Demo health data seeded successfully.');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // USER PROFILE
 // ═══════════════════════════════════════════════════════════════════════════════
 
-export async function saveUserProfile(profile) {
+export async function saveUserProfile(profile, patientId = 'user_001') {
     const database = await getDatabase();
-    const existing = await database.getFirstAsync('SELECT id FROM user_profile LIMIT 1');
+    const existing = await database.getFirstAsync('SELECT id FROM user_profile WHERE patient_id = ?', [patientId]);
     if (existing) {
         await database.runAsync(
             `UPDATE user_profile SET
         name = ?, age = ?, lmp_date = ?, due_date = ?, pregnancy_week = ?,
         height_cm = ?, start_weight_kg = ?, current_weight_kg = ?,
-        language = ?, asha_contact = ?, emergency_contact = ?, husband_contact = ?, phc_contact = ?,
+        language = ?, dialect = ?, district = ?, asha_contact = ?, emergency_contact = ?, husband_contact = ?, phc_contact = ?,
         ration_category = ?, nfsa_status = ?, state = ?, jdy_bank = ?, aadhaar_linked = ?, pmmvy_claimed = ?, jsy_registered = ?,
-        updated_at = CURRENT_TIMESTAMP
-       WHERE id = ?`,
-            [profile.name, profile.age, profile.lmp_date, profile.due_date, profile.pregnancy_week, profile.height_cm, profile.start_weight_kg, profile.current_weight_kg, profile.language || 'hi', profile.asha_contact, profile.emergency_contact, profile.husband_contact, profile.phc_contact, profile.ration_category || null, profile.nfsa_status ? 1 : 0, profile.state || null, profile.jdy_bank ? 1 : 0, profile.aadhaar_linked ? 1 : 0, profile.pmmvy_claimed || null, profile.jsy_registered ? 1 : 0, existing.id]
+        role = ?, updated_at = CURRENT_TIMESTAMP
+       WHERE patient_id = ?`,
+            [profile.name, profile.age, profile.lmp_date, profile.due_date, profile.pregnancy_week, profile.height_cm, profile.start_weight_kg, profile.current_weight_kg, profile.language || 'hi', profile.dialect || 'standard', profile.district || null, profile.asha_contact, profile.emergency_contact, profile.husband_contact, profile.phc_contact, profile.ration_category || null, profile.nfsa_status ? 1 : 0, profile.state || null, profile.jdy_bank ? 1 : 0, profile.aadhaar_linked ? 1 : 0, profile.pmmvy_claimed || null, profile.jsy_registered ? 1 : 0, profile.role || 'mother', patientId]
         );
         return existing.id;
     } else {
         const result = await database.runAsync(
-            `INSERT INTO user_profile (name, age, lmp_date, due_date, pregnancy_week, height_cm, start_weight_kg, current_weight_kg, language, asha_contact, emergency_contact, husband_contact, phc_contact, ration_category, nfsa_status, state, jdy_bank, aadhaar_linked, pmmvy_claimed, jsy_registered)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [profile.name, profile.age, profile.lmp_date, profile.due_date, profile.pregnancy_week, profile.height_cm, profile.start_weight_kg, profile.current_weight_kg, profile.language || 'hi', profile.asha_contact, profile.emergency_contact, profile.husband_contact, profile.phc_contact, profile.ration_category || null, profile.nfsa_status ? 1 : 0, profile.state || null, profile.jdy_bank ? 1 : 0, profile.aadhaar_linked ? 1 : 0, profile.pmmvy_claimed || null, profile.jsy_registered ? 1 : 0]
+            `INSERT INTO user_profile (patient_id, name, age, lmp_date, due_date, pregnancy_week, height_cm, start_weight_kg, current_weight_kg, language, dialect, district, asha_contact, emergency_contact, husband_contact, phc_contact, ration_category, nfsa_status, state, jdy_bank, aadhaar_linked, pmmvy_claimed, jsy_registered, role)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [patientId, profile.name, profile.age, profile.lmp_date, profile.due_date, profile.pregnancy_week, profile.height_cm, profile.start_weight_kg, profile.current_weight_kg, profile.language || 'hi', profile.dialect || 'standard', profile.district || null, profile.asha_contact, profile.emergency_contact, profile.husband_contact, profile.phc_contact, profile.ration_category || null, profile.nfsa_status ? 1 : 0, profile.state || null, profile.jdy_bank ? 1 : 0, profile.aadhaar_linked ? 1 : 0, profile.pmmvy_claimed || null, profile.jsy_registered ? 1 : 0, profile.role || 'mother']
         );
         return result.lastInsertRowId;
     }
 }
 
-export async function getUserProfile() {
+export async function getUserProfile(patientId = 'user_001') {
     const database = await getDatabase();
-    return await database.getFirstAsync('SELECT * FROM user_profile LIMIT 1');
+    let profile = await database.getFirstAsync('SELECT * FROM user_profile WHERE patient_id = ?', [patientId]);
+    if (!profile && patientId === 'user_001') {
+        profile = await database.getFirstAsync('SELECT * FROM user_profile LIMIT 1');
+    }
+    return profile;
 }
 
-export async function updatePregnancyWeek(week) {
+export async function updatePregnancyWeek(week, patientId = 'user_001') {
     const database = await getDatabase();
-    await database.runAsync('UPDATE user_profile SET pregnancy_week = ?, updated_at = CURRENT_TIMESTAMP', [week]);
+    await database.runAsync('UPDATE user_profile SET pregnancy_week = ?, updated_at = CURRENT_TIMESTAMP WHERE patient_id = ?', [week, patientId]);
+}
+
+export async function checkUserExists(patientId) {
+    const database = await getDatabase();
+    try {
+        const user = await database.getFirstAsync('SELECT id FROM user_profile WHERE patient_id = ?', [patientId]);
+        return !!user;
+    } catch (e) {
+        return false;
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -957,9 +1136,9 @@ export async function updateFoodImage(foodId, imageUrl) {
  * Extracts and calculates features required for the Diabetes XGBoost model.
  * Features: ['carb_avg_7d', 'sleep_avg_3d', 'HbA1c', 'glucose_trend', 'BMI', 'trimester']
  */
-export async function getDiabetesFeatures() {
+export async function getDiabetesFeatures(patientId = 'user_001') {
     const database = await getDatabase();
-    const profile = await getUserProfile();
+    const profile = await getUserProfile(patientId);
 
     // 1. carb_avg_7d: Average daily carbs over last 7 days from meal_logs
     const today = new Date().toISOString().split('T')[0];
@@ -982,9 +1161,9 @@ export async function getDiabetesFeatures() {
     // 4. glucose_trend: Slope of last 5 glucose readings
     const vitals = await database.getAllAsync(`
         SELECT blood_sugar FROM vitals_logs 
-        WHERE blood_sugar IS NOT NULL 
+        WHERE patient_id = ? AND blood_sugar IS NOT NULL 
         ORDER BY created_at DESC LIMIT 5
-        `);
+        `, [patientId]);
 
     let glucose_trend = 0;
     if (vitals.length >= 2) {
@@ -1076,4 +1255,38 @@ export async function getVisitHistory(patientId) {
             year: 'numeric'
         })
     }));
+}
+
+export async function getPatientsList() {
+    const database = await getDatabase();
+    const profiles = await database.getAllAsync("SELECT * FROM user_profile WHERE role = 'mother' OR role IS NULL");
+    const list = [];
+    for (const p of profiles) {
+        const vitals = await database.getAllAsync("SELECT * FROM vitals_logs WHERE patient_id = ? ORDER BY date DESC, time DESC LIMIT 1", [p.patient_id]);
+        const latest = vitals && vitals.length > 0 ? vitals[0] : null;
+
+        // Determine risk level based on latest vitals
+        let risk = 'Low';
+        let sys = latest?.systolic || 120;
+        let dia = latest?.diastolic || 80;
+        let bs = latest?.blood_sugar || 95;
+        if (sys >= 140 || dia >= 90 || bs >= 140) {
+            risk = 'High';
+        } else if (sys >= 130 || dia >= 80 || bs >= 120) {
+            risk = 'Normal';
+        }
+
+        list.push({
+            id: p.patient_id,
+            name: p.name,
+            age: p.age || 25,
+            week: p.pregnancy_week || 12,
+            risk: risk,
+            bp: latest ? `${sys}/${dia}` : '120/80',
+            hb: latest?.hba1c ? String(latest.hba1c) : '11.2',
+            lastSymptom: latest?.notes || 'None',
+            initial: p.name.split(' ').map(n => n[0]).join('').toUpperCase()
+        });
+    }
+    return list;
 }
