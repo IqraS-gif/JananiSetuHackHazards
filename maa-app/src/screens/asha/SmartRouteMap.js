@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import {
     StyleSheet,
     View,
@@ -10,12 +10,24 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useFocusEffect } from '@react-navigation/native';
 import { Colors } from '../../constants';
 import { useLanguage } from '../../context/LanguageContext';
+import { getPatientsList } from '../../services/database/DatabaseService';
 
 const { width } = Dimensions.get('window');
 
-const VISITS_DATA = [
+const getRiskValue = (risk) => {
+    switch (risk) {
+        case 'High': return 3;
+        case 'Medium':
+        case 'Normal':
+            return 2;
+        default: return 1;
+    }
+};
+
+const STATIC_VISITS = [
     {
         id: 'user_002',
         name: 'Sunita Devi',
@@ -54,24 +66,59 @@ const VISITS_DATA = [
     }
 ];
 
-const getRiskValue = (risk) => {
-    switch (risk) {
-        case 'High': return 3;
-        case 'Medium': return 2;
-        default: return 1;
-    }
-};
-
-const PRIORITIZED_VISITS = [...VISITS_DATA].sort((a, b) => getRiskValue(b.risk) - getRiskValue(a.risk));
-
 export default function SmartRouteMap({ navigation }) {
     const { language } = useLanguage();
     const isHindi = language === 'hi';
+    const [visits, setVisits] = useState([]);
+
+    useFocusEffect(
+        useCallback(() => {
+            let active = true;
+            const fetchVisits = async () => {
+                try {
+                    const list = await getPatientsList();
+                    if (active) {
+                        const formatted = list.map((item, idx) => ({
+                            id: item.id,
+                            name: item.name,
+                            risk: item.risk,
+                            reason: item.risk === 'High' ? 'Hypertension detected by AI' : 'Routine checkup',
+                            distance: `${(0.8 + idx * 0.6).toFixed(1)} km`,
+                            week: item.week,
+                            urgent: item.risk === 'High',
+                        }));
+
+                        const map = new Map();
+                        STATIC_VISITS.forEach(v => map.set(v.id, v));
+                        formatted.forEach(v => map.set(v.id, v));
+                        const merged = Array.from(map.values());
+
+                        // Sort by risk
+                        const sorted = merged.sort((a, b) => getRiskValue(b.risk) - getRiskValue(a.risk));
+                        
+                        // Re-calculate distance based on prioritized index to keep routing logic clean
+                        const reCalculated = sorted.map((v, idx) => ({
+                            ...v,
+                            distance: `${(0.8 + idx * 0.6).toFixed(1)} km`
+                        }));
+
+                        setVisits(reCalculated);
+                    }
+                } catch (e) {
+                    console.error("[SmartRouteMap] Fetch error:", e);
+                }
+            };
+            fetchVisits();
+            return () => { active = false; };
+        }, [])
+    );
 
     const getRiskColor = (risk) => {
         switch (risk) {
             case 'High': return '#FF4B6C';
-            case 'Medium': return '#FFB020';
+            case 'Medium':
+            case 'Normal':
+                return '#FFB020';
             default: return '#4CAF50';
         }
     };
@@ -80,7 +127,9 @@ export default function SmartRouteMap({ navigation }) {
         if (!isHindi) return risk.toUpperCase();
         switch (risk) {
             case 'High': return 'उच्च';
-            case 'Medium': return 'मध्यम';
+            case 'Medium':
+            case 'Normal':
+                return 'मध्यम';
             default: return 'सामान्य';
         }
     };
@@ -118,14 +167,14 @@ export default function SmartRouteMap({ navigation }) {
                     </LinearGradient>
                 </View>
 
-                {PRIORITIZED_VISITS.map((visit, index) => (
+                {visits.map((visit, index) => (
                     <View key={visit.id} style={st.timelineItem}>
                         {/* Timeline Side */}
                         <View style={st.timelineSidebar}>
                             <View style={[st.dot, { backgroundColor: getRiskColor(visit.risk) }]}>
                                 <View style={[st.dotInner, { backgroundColor: '#FFF' }]} />
                             </View>
-                            {index !== PRIORITIZED_VISITS.length - 1 && <View style={st.line} />}
+                            {index !== visits.length - 1 && <View style={st.line} />}
                         </View>
 
                         {/* Visit Card */}
